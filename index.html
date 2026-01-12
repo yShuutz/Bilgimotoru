@@ -1,0 +1,2004 @@
+<!DOCTYPE html>
+<html lang="tr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BilgiMotoru | Kategori Arşivi</title>
+    <style>
+        /* Temel Stiller */
+        body {
+            margin: 0;
+            font-family: 'Segoe UI', sans-serif;
+            background: linear-gradient(135deg, #f1c40f, #3498db, #2ecc71);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            overflow-x: hidden;
+            position: relative;
+            padding-top: 80px;
+        }
+
+        /* Yan Menü (Sidebar) */
+        .sidebar {
+            position: fixed;
+            left: -300px;
+            top: 0;
+            width: 250px;
+            height: 100%;
+            background: rgba(255, 255, 255, 0.98);
+            backdrop-filter: blur(10px);
+            transition: all 0.4s cubic-bezier(0.77, 0.2, 0.05, 1.0);
+            z-index: 100;
+            padding: 20px;
+            box-shadow: none;
+        }
+
+        .sidebar.active {
+            left: 0;
+            box-shadow: 10px 0 30px rgba(0, 0, 0, 0.2);
+        }
+
+        .sidebar h2 {
+            color: #2c3e50;
+            border-bottom: 2px solid #3498db;
+            padding-bottom: 10px;
+            margin-top: 50px;
+        }
+
+        .sidebar ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .sidebar ul li {
+            padding: 12px;
+            margin: 5px 0;
+            background: #f8f9fa;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: 0.3s;
+            font-weight: 500;
+        }
+
+        .sidebar ul li:hover {
+            background: #3498db;
+            color: white;
+        }
+
+        /* Menü Butonu */
+        .menu-btn {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            font-size: 24px;
+            cursor: pointer;
+            z-index: 101;
+            background: white;
+            width: 45px;
+            height: 45px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Ana Konteyner */
+        .container {
+            background: rgba(255, 255, 255, 0.95);
+            padding: 30px;
+            border-radius: 25px;
+            width: 90%;
+            max-width: 800px;
+            z-index: 1;
+            text-align: center;
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.1);
+            margin-bottom: 50px;
+        }
+
+        /* Arama Kutusu */
+        .search-box {
+            display: flex;
+            gap: 10px;
+            margin: 20px 0;
+        }
+
+        input {
+            flex: 1;
+            padding: 15px;
+            border: 2px solid #eee;
+            border-radius: 12px;
+            font-size: 16px;
+            outline: none;
+        }
+
+        .search-btn {
+            background: #3498db;
+            color: white;
+            border: none;
+            padding: 0 20px;
+            border-radius: 12px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        /* Bilgi Kartları Alanı */
+        #content-area {
+            margin-top: 20px;
+            display: grid;
+            gap: 15px;
+            text-align: left;
+        }
+
+        .info-card {
+            background: white;
+            padding: 20px;
+            border-radius: 15px;
+            border-left: 6px solid #2ecc71;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+            animation: fadeIn 0.5s ease forwards;
+        }
+
+        .category-header {
+            color: #2c3e50;
+            margin-bottom: 20px;
+            font-size: 1.5rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Baloncuklar */
+        .bubble {
+            position: absolute;
+            bottom: -100px;
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            animation: rise 10s infinite ease-in;
+            z-index: 0;
+        }
+
+        @keyframes rise {
+            0% {
+                bottom: -100px;
+            }
+
+            100% {
+                bottom: 110%;
+            }
+        }
+
+        /* Karanlık Mod Renkleri */
+        body.dark-mode {
+            background: linear-gradient(135deg, #2c3e50, #000000) !important;
+        }
+
+        body.dark-mode .container,
+        body.dark-mode .sidebar {
+            background: rgba(30, 39, 46, 0.98) !important;
+            color: rgb(180, 148, 148) !important;
+        }
+
+        body.dark-mode .info-card {
+            background: #2f3542 !important;
+            color: #ffffff !important;
+            border-left-color: #f1c40f !important;
+        }
+
+        body.dark-mode input {
+            background: #1e272e !important;
+            color: rgb(0, 0, 0) !important;
+            border-color: #555 !important;
+        }
+
+
+
+
+        .share-btn {
+            float: right;
+            background: #25D366;
+            color: white;
+            padding: 3px 8px;
+            border-radius: 5px;
+            font-size: 12px;
+            cursor: pointer;
+            font-weight: bold;
+            text-decoration: none;
+        }
+
+.sidebar {
+    overflow-y: auto; /* Menü uzun olursa kaydırılabilir olsun */
+}
+
+
+.content {
+    margin-left: 270px; /* Sidebar genişliğine göre ayarla */
+    padding: 20px;
+    font-family: sans-serif;
+}
+
+
+    </style>
+</head>
+
+<body>
+
+
+    <button onclick="toggleTheme()"
+        style="position:fixed; top:20px; right:20px; z-index:1000; padding:10px; cursor:pointer; border-radius:50%; border:none; background:white; font-size:20px; box-shadow:0 2px 10px rgba(0,0,0,0.2);"
+        id="tbtn">🌙</button>
+
+
+    <div class="menu-btn" onclick="toggleMenu()">☰</div>
+
+    
+
+    <div class="sidebar" id="sidebar">
+
+
+        
+        <h2>Kategoriler</h2>
+        <ul>
+            <li onclick="loadCategory('Doğa')">🌿 Doğa</li>
+            <li onclick="loadCategory('Sağlık')">🍎 Sağlık</li>
+            <li onclick="loadCategory('Oyun')">🎮 Oyun</li>
+            <li onclick="loadCategory('Teknoloji')">💻 Teknoloji</li>
+            <li onclick="loadCategory('Tarih')">📜 Tarih</li>
+            <li onclick="loadCategory('Uzay')">🚀 Uzay</li>
+            <li onclick="loadCategory('Hayvanlar')">🐾 Hayvanlar</li>
+            <li onclick="loadCategory('Coğrafya')">🌍 Coğrafya</li>
+            <li onclick="loadCategory('Spor')">⚽ Spor</li>
+            <li onclick="loadCategory('Sanat')">🎨 Sanat</li>
+            <li onclick="loadCategory('Yiyecek')">🍕 Yiyecek</li>
+            <li onclick="loadCategory('Edebiyat')">📚 Edebiyat</li>
+            <li onclick="loadCategory('İlginç İcatlar')">💡 İcatlar</li>
+            <li onclick="loadCategory('Psikoloji')">🧠 Psikoloji</li>
+            <li onclick="loadCategory('Mitoloji')">🔱 Mitoloji</li>
+            <li onclick="loadCategory('Bilim')">🧪 Bilim</li>
+            <li onclick="loadCategory('Müzik')">🎵 Müzik</li>
+            <li onclick="loadCategory('Sinema')">🎬 Sinema</li>
+            <li onclick="loadCategory('Vücudumuz')">🧬 Vücudumuz</li>
+            <li onclick="loadCategory('Moda')">👠 Moda</li>
+            <li onclick="loadCategory('Denizler')">🌊 Denizler</li>
+            <li onclick="loadCategory('Hukuk')">⚖️ Hukuk</li>
+            <li onclick="loadCategory('Bitkiler')">🌿 Bitkiler</li>
+            <li onclick="loadCategory('Matematik')">🔢 Matematik</li>
+            <li onclick="loadCategory('Ekonomi')">💰 Ekonomi</li>
+            <li onclick="loadCategory('Havacılık')">✈️ Havacılık</li>
+            <li onclick="loadCategory('Mühendislik')">🏗️ Mühendislik</li>
+            <li onclick="loadCategory('Genel Kültür')">🌍 Genel Kültür</li>
+
+        </ul>
+    </div>
+
+    <div id="bubble-container"></div>
+
+    <div class="container">
+        <h1>Bilgi<span>Motoru</span></h1>
+        <div class="search-box">
+            <input type="text" id="user-query" placeholder="Kelime ile ara..." onkeypress="handleKeyPress(event)">
+            <button class="search-btn" onclick="searchWord()">Ara</button>
+        </div>
+
+        <h2 id="current-cat-title" class="category-header">Hoş Geldiniz!</h2>
+        <div id="content-area">
+            <div class="info-card">Lütfen bir kategori seçin veya arama yapın.</div>
+        </div>
+    </div>
+
+    <script>
+
+        
+
+
+
+        // DEV VERİTABANI
+        const veritabani = {
+
+
+
+
+            "Doğa": [
+                "Amazon ormanları dünyadaki oksijenin %20'sini üretir.",
+                "Dünyanın en derin yeri Mariana Çukuru'dur (yaklaşık 11 km).",
+                "Kar tanelerinin her birinin tasarımı birbirinden farklıdır.",
+                "Ağaçlar birbirleriyle kökleri aracılığıyla iletişim kurabilir.",
+                "Bir yıldırımın sıcaklığı Güneş'in yüzeyinden 5 kat daha fazladır.",
+                "Gezegenimizdeki suyun sadece %3'ü tatlı sudur.",
+                "Mavi balinaların dili bir filin ağırlığı kadar olabilir.",
+                "Kutup ayılarının derisi aslında siyahtır, tüyleri ise şeffaftır.",
+                "Dünyanın en uzun yaşayan ağacı 5.000 yaşından büyüktür.",
+                "İnsan vücudundaki atomlar, sönmüş yıldızların kalıntılarından oluşur.",
+                "Atlar ve fareler kusamazlar.",
+                "İneklerin en iyi arkadaşları vardır ve onlardan ayrıldıklarında strese girerler.",
+                "Venüs'te bir gün, bir yıldan daha uzun sürer.",
+                "Eğrelti otları dinozorlardan daha eski bir bitki türüdür.",
+                "Istakozların kanı renksizdir ancak oksijenle temas edince maviye döner.",
+                "Dünya üzerindeki tüm karıncaların toplam ağırlığı tüm insanlara yakındır.",
+                "Zürafaların dili 50 santimetreye kadar uzayabilir ve siyahtır.",
+                "Dünyanın en hızlı hayvanı gökdoğan (peregrine falcon) saatte 380 km hıza ulaşabilir.",
+                "Bir ağaç hayatı boyunca yaklaşık 1 ton karbondioksit emer.",
+                "Ayçiçekleri radyasyonu temizlemek için toprakta kullanılabilir.",
+                "Muz bir meyve değil, teknik olarak bir bitki türüdür (berry).",
+                "Huş ağaçları yılda 1 milyon tohum üretebilir.",
+                "Su aygırları terlediklerinde terleri kırmızı renkte görünür.",
+                "Karıncalar kendi ağırlıklarının 50 katını kaldırabilirler.",
+                "Arılar dünyanın en önemli tozlaştırıcısıdır; gıdamızın 3'te 1'i onlara bağlıdır.",
+                "Dev sekoya ağaçlarının kabukları yangına dayanıklıdır.",
+                "Dünyanın en küçük kuş türü arı sinek kuşudur (bee hummingbird).",
+                "Denizatı, erkekleri doğum yapan tek canlı türüdür.",
+                "Koalalar günde 22 saat uyuyabilirler.",
+                "Yeryüzündeki en yaşlı canlılar, yaklaşık 80.000 yaşındaki Pando adlı ağaç kolonisidir.",
+                "Gökkuşağı aslında tam bir dairedir, ancak yerden sadece yarısını görürüz.",
+                "Bir bulut ortalama 500 ton ağırlığındadır.",
+                "Yerçekimi nedeniyle Dünya'daki en yüksek dağın 15 km'yi geçmesi imkansızdır.",
+                "Güneş ışığı Dünya'ya yaklaşık 8 dakika 20 saniyede ulaşır.",
+                "Toprağın bir çay kaşığında, dünyadaki insan sayısından daha fazla mikroorganizma vardır.",
+                "Filler zıplayamayan tek memeli hayvan türüdür.",
+                "Yılanlar dilleriyle koku alırlar.",
+                "Mavi balinanın kalbi bir otomobil büyüklüğündedir.",
+                "Panda yavruları doğduklarında bir fare kadar küçüktür.",
+                "Penguenler tuzlu suyu içip vücutlarındaki bir bez sayesinde tuzu filtreleyebilir.",
+                "Jüpiter ve Satürn'de elmas yağmuru yağdığı düşünülmektedir.",
+                "Kargalar yüzleri tanıyabilir ve onlara kötü davranan insanları unutmazlar.",
+                "Dünya aslında tam bir küre değil, kutuplardan basık bir elipsoittir.",
+                "Kelebekler ayaklarıyla tat alırlar.",
+                "Sıcak su, soğuk sudan daha hızlı donabilir.",
+                "Güneş, sistemimizdeki toplam kütlenin %99.8'ini oluşturur."
+
+            ],
+            "Sağlık": [
+                "Gülmek stres seviyesini düşürür ve bağışıklığı güçlendirir.",
+                "İnsan vücudundaki en güçlü kas çene kasıdır.",
+                "Yeterli uyku hafızayı ve öğrenme yeteneğini artırır.",
+                "Düzenli yürüyüş yapmak kalp sağlığını korur.",
+                "Vücudumuzdaki damarların toplam uzunluğu dünyayı iki kez sarabilir.",
+                "İnsan burnu yaklaşık 50.000 farklı kokuyu hatırlayabilir.",
+                "Kalp, günde ortalama 100.000 kez çarpar.",
+                "Kemiklerimiz çelikten daha güçlüdür; bir kibrit kutusu kadar kemik 9 tonu taşıyabilir.",
+                "Beynimiz vücut enerjisinin %20'sini tek başına tüketir.",
+                "Gözlerimiz aslında her şeyi ters görür, beyin bunu düzeltir.",
+                "İnsan vücudundaki damarların uzunluğu dünyayı iki kez saracak kadardır.",
+                "Hapşırdığınızda tüm vücut fonksiyonlarınız bir anlığına durur.",
+                "Parmak izi gibi, her insanın dil izi de benzersizdir.",
+                "Vücudumuzdaki en küçük kemik kulak içindedir.",
+                "Yeterli uyku, bilgilerin hafızaya kaydedilmesi için şarttır.",
+                "Mideniz her iki haftada bir yeni bir iç astar üretir, yoksa kendini sindirir.",
+                "Göz kırpmak yılda yaklaşık 4.2 milyon kez gerçekleşir.",
+                "İnsan vücudundaki toplam bakteri ağırlığı yaklaşık 2 kilogramdır.",
+                "Kanın vücutta tam bir tur atması sadece 60 saniye sürer.",
+                "Diş minesi vücudun en sert maddesidir.",
+                "Mavi gözlü insanların alkol toleransının daha yüksek olduğu düşünülmektedir.",
+                "Güneş ışığı vücutta D vitamini üretimini tetikler.",
+                "İnsan beyni uyurken uyanık olduğundan daha fazla elektrik üretir.",
+                "Boyumuz sabahları, akşam saatlerine göre yaklaşık 1 cm daha uzundur.",
+                "Karaciğer, kendini tamamen yenileyebilen tek organdır.",
+                "Yetişkin bir insan vücudunda 206 kemik vardır.",
+                "Bebekler diz kapakları olmadan doğarlar; 2-6 yaş arasında oluşur.",
+                "Yazı yazmak için yaklaşık 12 kasımızı kullanırız.",
+                "Beyindeki sinir iletilerinin hızı saatte 270 km'ye ulaşabilir.",
+                "Kulaklar ve burun hayat boyunca büyümeye devam eder.",
+                "İnsan vücudundaki karbon miktarı 900 kurşun kaleme yetecek kadardır.",
+                "Yürümek için 200 farklı kasımızı kullanırız.",
+                "Koku duyusu, duygularla en doğrudan bağlantılı duyumuzdur.",
+                "Soğuk suyla duş almak kan dolaşımını hızlandırır.",
+                "Ortalama bir insan hayatı boyunca 25.000 litre tükürük üretir.",
+                "El tırnakları, ayak tırnaklarından 4 kat daha hızlı uzar.",
+                "İnsan ömrü boyunca derisini yaklaşık 900 kez tamamen yeniler.",
+                "Akciğerlerimizin yüzey alanı bir tenis kortu büyüklüğündedir.",
+                "Kalp, vücudun dışındayken bile bir süre atmaya devam edebilir.",
+                "Magnezyum eksikliği uyku bozukluklarına yol açabilir.",
+                "Diyafram kası kasıldığında hıçkırık oluşur.",
+                "Okuma hızı, kağıttan okurken ekrana göre %25 daha hızlıdır.",
+                "Dengemizi sağlayan ana mekanizma iç kulaktadır.",
+                "Kas dokusu, yağ dokusundan 3 kat daha fazla kalori yakar.",
+                "Stres altındayken vücut 'savaş ya da kaç' hormonu salgılar.",
+                "Düzenli egzersiz yapmak beyindeki yeni hücre oluşumunu destekler.",
+                "İnsan gözü 10 milyondan fazla renk tonunu ayırt edebilir.",
+                "Kandaki oksijen seviyesi düştüğünde esneme refleksi oluşur.",
+                "Vücudun en büyük organı deridir.",
+                "Sol akciğer, kalbe yer açmak için sağdakinden biraz daha küçüktür.",
+                "Beyin acı hissetmez; sadece acı sinyallerini yorumlar.",
+                "Kahvaltı yapmak metabolizmayı uyandırır ve odaklanmayı artırır."
+
+            ],
+            "Teknoloji": [
+                "İlk bilgisayar mouse'u ahşaptan yapılmıştır.",
+                "İnternet üzerinde saniyede yaklaşık 3 milyon e-posta gönderiliyor.",
+                "Dünyanın ilk programcısı Ada Lovelace adında bir kadındır.",
+                "Akıllı telefonlar, NASA'nın Ay'a gönderdiği bilgisayardan daha güçlüdür.",
+                "Google'ın ilk ismi 'Backrub' olarak belirlenmişti.",
+                "Firefox logosundaki hayvan aslında bir tilki değil, Çince adı 'ateş tilkisi' olan kızıl pandadır.",
+                "Dünyadaki paranın sadece %8'i fiziksel nakit olarak bulunur, kalanı dijital veridir.",
+                "İlk hard disk (IBM 305 RAMAC) 1956'da yapıldı ve 5 MB veriyi sığdırmak için bir buzdolabı büyüklüğündeydi.",
+                "Q klavye düzeni, daktilolarda harflerin birbirine takılmasını önlemek için harfleri yavaşlatmak amacıyla icat edildi.",
+                "Bluetooth ismi, 10. yüzyılda yaşayan Danimarka kralı 'Harald Bluetooth'tan gelmektedir.",
+                "İlk kısa mesaj (SMS) 1992 yılında 'Mutlu Noeller' mesajıyla gönderildi.",
+                "YouTube'a yüklenen ilk video 'Me at the zoo' başlığıyla 2005 yılında yüklendi.",
+                "E-postanın babası sayılan Ray Tomlinson, '@' sembolünü ilk kullanan kişidir.",
+                "Amazon başlangıçta sadece bir kitap satış sitesiydi.",
+                "Dünyanın ilk 1 GB'lık sabit diski 1980 yılında yapıldı ve 250 kg ağırlığındaydı.",
+                "Google, her yıl saniyede yaklaşık 40.000 arama sorgusu işlemektedir.",
+                "Windows işletim sisteminin orijinal adı 'Interface Manager' (Arayüz Yöneticisi) olacaktı.",
+                "İlk dijital kamera 1975'te bir Kodak mühendisi tarafından yapıldı ve 0.01 megapikseldi.",
+                "Wi-Fi ismi aslında bir anlam taşımaz; 'Wireless Fidelity'nin kısaltması olduğu bir pazarlama efsanesidir.",
+                "Dünyadaki web sitelerinin %40'ından fazlası WordPress altyapısını kullanır.",
+                "Bir insanın ortalama dakikada 20 kez göz kırptığı, ekran başında ise bu sayının 7'ye düştüğü bilinmektedir.",
+                "İlk alan adı (domain) 'symbolics.com' olarak 15 Mart 1985'te tescil edildi.",
+                "Elon Musk, 12 yaşındayken 'Blastar' adında bir video oyunu kodu yazıp satmıştı.",
+                "Spam e-postaların adı, bir tür konserve et olan 'Spam' markasından gelmektedir.",
+                "Apple'ın ilk logosunda Isaac Newton bir elma ağacının altında otururken resmedilmişti.",
+                "Dünyada insan sayısından daha fazla mobil cihaz bağlantısı bulunmaktadır.",
+                "İlk taşınabilir cep telefonu 1973 yılında Motorola tarafından üretildi ve 1.1 kg ağırlığındaydı.",
+                "CAPCHA testi, bilgisayarların insanlardan ayırt edilmesi için kullanılan bir Turing testidir.",
+                "Mikrodalga fırın, bir radar mühendisinin cebindeki çikolatanın erimesini fark etmesiyle kazara icat edildi.",
+                "İnternetin toplam ağırlığının yaklaşık 50 gram (bir büyük çilek kadar) olduğu hesaplanmıştır.",
+                "İlk bilgisayar virüsü 1971 yılında yazılan 'Creeper' virüsüydü.",
+                "NASA'nın Mars'taki robotları Python ve C++ gibi dillerle programlanmıştır.",
+                "Yapay zeka (AI) kavramı ilk kez 1956 yılında bir konferansta ortaya atıldı.",
+                "Dünyanın en hızlı süper bilgisayarları saniyede katrilyonlarca işlem yapabilir.",
+                "Deep Web (Derin Ağ), internetin görünen kısmından yaklaşık 500 kat daha büyüktür.",
+                "USB bellekler, disketlerin ve CD'lerin yerini alarak veri taşımayı devrimselleştirdi.",
+                "Otonom araçlar (sürücüsüz arabalar), yolu algılamak için LiDAR teknolojisini kullanır.",
+                "3D yazıcı teknolojisi sanılanın aksine 1980'lerden beri var olan bir teknolojidir.",
+                "Blockchain (Blokzincir), Bitcoin ile hayatımıza giren dağıtık bir kayıt sistemidir.",
+                "QR kodları başlangıçta otomobil parçalarını takip etmek için Toyota tarafından geliştirildi.",
+                "Siber güvenlik saldırılarının çoğu (yaklaşık %90'ı) insan hatasından kaynaklanır.",
+                "NFC teknolojisi, cihazların birbirine birkaç santim yaklaşmasıyla veri transferi sağlar.",
+                "Grafen, çelikten 200 kat daha güçlü ama kağıttan çok daha ince bir teknoloji harikasıdır.",
+                "OLED ekranlar, her pikselin kendi ışığını yayması sayesinde sonsuz siyah sunar.",
+                "Bulut bilişim (Cloud), verilerin uzak sunucularda saklanması ve işlenmesidir.",
+                "Nesnelerin İnterneti (IoT), buzdolabınızdan saatinize her şeyin internete bağlanmasıdır.",
+                "Bilgisayar programlarındaki hatalara 'bug' (böcek) denmesinin sebebi, eski bir bilgisayara giren gerçek bir güvedir.",
+                "Kripto paralar, merkezi bir otoriteye ihtiyaç duymayan dijital varlıklardır.",
+                "Hologram teknolojisi, ışık dalgalarının girişimiyle 3 boyutlu görüntüler oluşturur.",
+                "Kuantum bilgisayarlar, aynı anda hem 0 hem 1 olabilen 'qubit'leri kullanır."
+
+            ],
+            "Tarih": [
+                "Antik Mısır'da kediler kutsal sayılırdı.",
+                "Osmanlı İmparatorluğu 600 yıldan fazla hüküm sürmüştür.",
+                "Kağıt ilk olarak Çin'de icat edilmiştir.",
+                "Eyfel Kulesi aslında geçici bir yapı olarak inşa edilmişti.",
+                "Dünya tarihinin en geniş bitişik kara imparatorluğunu Cengiz Han liderliğindeki Moğollar kurmuştur.",
+                "Kağıt, MS 105 yılında Çin'de Ts'ai Lun tarafından icat edildi.",
+                "Titanik batarken orkestra, panik halindeki yolcuları sakinleştirmek için son ana kadar müzik çalmaya devam etti.",
+                "Albert Einstein'a 1952 yılında İsrail Cumhurbaşkanlığı teklif edilmiş ancak o bunu reddetmiştir.",
+                "Mayalar, matematik sistemlerinde 'sıfır' kavramını kullanan ilk uygarlıklardan biridir.",
+                "19. yüzyıla kadar ketçap, mide rahatsızlıkları için bir ilaç olarak satılıyordu.",
+                "Büyük İskender, 32 yaşına kadar bilinen dünyanın çoğunu fethetmiş ama hiç savaş kaybetmemiştir.",
+                "Fransız İhtilali, modern demokrasinin ve insan hakları kavramının temel taşlarından biri kabul edilir.",
+                "Aztekler, kakaoyu o kadar değerli buluyorlardı ki onu para birimi olarak kullanıyorlardı.",
+                "İnkalar, yazı yazmak yerine 'Quipu' denilen düğümlü iplerle kayıt tutuyorlardı.",
+                "Tarihteki en kısa savaş, İngiltere ile Zanzibar arasında olmuş ve sadece 38 dakika sürmüştür.",
+                "Eski Mısır'da hem erkekler hem de kadınlar göz makyajı yapıyordu; bunun koruyucu etkisine inanıyorlardı.",
+                "Rönesans dönemi, Avrupa'da sanat, bilim ve edebiyatın yeniden doğuşunu simgeler.",
+                "İstanbul, tarih boyunca 28 kez kuşatılmıştır; Fatih Sultan Mehmet 1453'te şehri fethetmiştir.",
+                "Amerika Birleşik Devletleri'nin ilk başkanı George Washington'ın takma dişleri tahtadan değil, fildişi ve altındandı.",
+                "Çin Seddi, dünyanın en uzun insan yapımı yapısıdır ve binlerce yıl süren bir çalışmanın ürünüdür.",
+                "Antik Yunanistan'da Olimpiyat Oyunları, tanrı Zeus onuruna düzenlenen dini bir festivaldi.",
+                "Orta Çağ'da 'Kara Ölüm' (Veba), Avrupa nüfusunun yaklaşık üçte birini yok etmiştir.",
+                "Vikinkler, sanılanın aksine boynuzlu kasklar takmıyorlardı; bu bir opera kostümü efsanesidir.",
+                "Tekerlek, Mezopotamya'da MÖ 3500 civarında icat edildi ama başlangıçta ulaşım için değil çömlekçilik için kullanıldı.",
+                "Hititler, tarihteki ilk yazılı barış antlaşması olan Kadeş Antlaşması'nı Mısırlılarla imzalamıştır.",
+                "Kleopatra aslında Mısırlı değil, Yunan kökenli (Ptolemaios Hanedanı) bir kraliçeydi.",
+                "Osmanlı'da matbaayı kullanan ilk kişi İbrahim Müteferrika'dır (1727).",
+                "Napolyon Bonapart, sanılanın aksine çok kısa değildi; o dönemin Fransız ölçü birimlerine göre ortalama boydaydı.",
+                "Sanayi Devrimi, 18. yüzyılda İngiltere'de başlayarak üretimi el işçiliğinden makineleşmeye taşımıştır.",
+                "Lidya uygarlığı, tarihte parayı ilk kullanan ve ticaret yollarını geliştiren toplumdur.",
+                "Hammurabi Kanunları, tarihteki en eski ve en iyi korunmuş yazılı yasa koleksiyonlarından biridir.",
+                "Truva Savaşı, Homeros'un İlyada destanında anlatılan efsanevi bir savaştır.",
+                "Cenevizliler ve Venedikliler, Orta Çağ'da Akdeniz ticaretinin en büyük güçleriydi.",
+                "Abbasiler dönemi, İslam dünyasının 'Altın Çağı' olarak bilinir ve bilimde büyük ilerlemeler kaydedilmiştir.",
+                "Piri Reis, 1513 yılında çizdiği dünya haritasıyla Amerika kıtasını oldukça isabetli şekilde göstermiştir.",
+                "Magna Carta (Büyük Sözleşme), 1215'te İngiltere'de kralın yetkilerini kısıtlayan ilk belgedir.",
+                "Sümerler, yazıyı (çivi yazısı) bulan ve tarihin başlangıcını simgeleyen uygarlıktır.",
+                "Kristof Kolomb, Amerika'ya ulaştığında orayı Hindistan sandığı için yerlilere 'Indian' (Hintli) demiştir.",
+                "Birinci Dünya Savaşı'nda kullanılan tanklar, gizlilik amacıyla 'su tankı' süsü verilerek nakledildikleri için bu adı almıştır.",
+                "Büyük Roma Yangını (MS 64) sırasında İmparator Neron'un şehri izleyerek lir çaldığı söylenir.",
+                "İpek Yolu, Doğu ile Batı arasında sadece mal değil, kültür ve bilgi transferini de sağlamıştır.",
+                "Samuraylar, feodal Japonya'nın soylu asker sınıfıydı ve 'Buşido' (Savaşçının Yolu) koduna göre yaşarlardı.",
+                "Moai heykelleri, Paskalya Adası'nda bulunan ve kimin yaptığı hala tam çözülemeyen devasa taş yapılardır.",
+                "1783'te Montgolfier kardeşler, ilk başarılı sıcak hava balonu uçuşunu gerçekleştirmiştir.",
+                "İkinci Dünya Savaşı tarihteki en geniş kapsamlı savaştır ve 70 milyondan fazla insanın ölümüne neden olmuştur.",
+                "Mona Lisa tablosu, 1911'de çalındıktan sonra dünya çapında bu kadar meşhur hale gelmiştir.",
+                "Eski Romalılar, betonu icat etmişlerdi; onların yaptığı yapılar binlerce yıl sonra hala ayaktadır.",
+                "Machu Picchu, 15. yüzyılda İnkalar tarafından deniz seviyesinden 2.430 metre yükseklikte kurulmuştur.",
+                "İlk uçuşu 1903 yılında Wright Kardeşler gerçekleştirmiş ve uçuş sadece 12 saniye sürmüştür.",
+                "Sultan II. Abdülhamid döneminde Osmanlı'ya ilk telgraf ve demir yolu hatları geniş çapta getirilmiştir."
+            ],
+
+            "Uzay": [
+                "Uzay tamamen sessizdir çünkü sesin yayılması için bir atmosfer yoktur.",
+                "Güneş Sistemi'ndeki en yüksek dağ, Mars'taki 21 km yüksekliğindeki Olympus Mons'tur.",
+                "Venüs'te bir gün, bir yıldan daha uzun sürer.",
+                "Satürn'ün halkaları çoğunlukla buz ve kaya parçalarından oluşur.",
+                "Uzayda yerçekimi olmadığı için astronotların boyu yaklaşık 5 cm uzar.",
+                "Güneş'in içine yaklaşık 1.3 milyon adet Dünya sığabilir.",
+                "Nötron yıldızları o kadar yoğundur ki, bir çay kaşığı kadarı 6 milyar ton gelir.",
+                "Venüs, Güneş'e en yakın gezegen olmamasına rağmen en sıcak gezegendir.",
+                "Ay'daki ayak izleri, rüzgar olmadığı için milyonlarca yıl boyunca silinmeyecek.",
+                "Uzayda ağlarsanız gözyaşlarınız akmaz, yüzünüzde bir top gibi birikir.",
+                "Jüpiter'in 'Büyük Kırmızı Leke'si, Dünya'dan daha büyük olan devasa bir fırtınadır.",
+                "Işık hızında gitseniz bile en yakın galaksi olan Andromeda'ya ulaşmak 2.5 milyon yıl sürer.",
+                "Mars, demir oksit (pas) nedeniyle kırmızı görünür.",
+                "Plüton, Amerika Birleşik Devletleri'nden daha dar bir yüzölçümüne sahiptir.",
+                "Güneş, sistemimizdeki toplam kütlenin %99.8'ini oluşturur.",
+                "Satürn, yoğunluğu sudan düşük olan tek gezegendir; dev bir okyanusta yüzebilir.",
+                "Uzayda yaklaşık 100 milyar galaksi olduğu tahmin edilmektedir.",
+                "Ay aslında her yıl Dünya'dan yaklaşık 3.8 cm uzaklaşmaktadır.",
+                "Astronot kıyafetleri yaklaşık 12 milyon dolar değerindedir.",
+                "Dünya'dan bakıldığında Güneş ve Ay aynı boyutta görünür, bu sayede tam tutulma gerçekleşir.",
+                "Güneş ışığı Dünya'ya 8 dakika 20 saniyede ulaşır.",
+                "Merkür'de gündüzler 430 derece, geceler ise -180 derecedir.",
+                "Uzayda 'metal kaynağı' denen bir olay olur; iki aynı metal dokunursa kalıcı olarak birleşir.",
+                "Jüpiter ve Satürn'de elmas yağmuru yağdığı düşünülmektedir.",
+                "Bir kara delik, ışığın bile kaçamayacağı kadar güçlü bir çekim alanına sahiptir.",
+                "Samanyolu Galaksisi saatte yaklaşık 2 milyon km hızla hareket eder.",
+                "Uzay boşluğu sanılanın aksine tamamen boş değildir, çok düşük yoğunlukta parçacıklar içerir.",
+                "Ay'ın sadece bir yüzünü görürüz çünkü kendi etrafında ve Dünya etrafında dönüşü eşzamanlıdır.",
+                "Voyager 1, insan yapımı olup yıldızlararası uzaya çıkan ilk nesnedir.",
+                "Uranüs, Güneş etrafında yan yatmış bir varil gibi yuvarlanarak döner.",
+                "Uzayda yemeklerin tadı, kanın başa toplanması nedeniyle daha az algılanır.",
+                "Kuyruklu yıldızların kuyrukları her zaman Güneş'in tersi yönüne bakar.",
+                "Güneş aslında beyaz bir yıldızdır, atmosferimiz onu sarı gösterir.",
+                "Mars'ta gün batımı Dünya'nın aksine mavi renkte görünür.",
+                "Hubble Uzay Teleskobu, evrenin yaklaşık 13.8 milyar yaşında olduğunu doğrulamıştır.",
+                "Göktaşlarının çoğu atmosfere girdiğinde sürtünmeden dolayı yanarak yok olur.",
+                "Uluslararası Uzay İstasyonu (ISS), bir futbol sahası büyüklüğündedir.",
+                "Uzayda yön duygusu yoktur çünkü 'yukarı' veya 'aşağı' kavramı yerçekimine bağlıdır.",
+                "Dünya'nın uydusu Ay, sistemimizdeki en büyük beşinci uydudur.",
+                "Güneş'in yüzey sıcaklığı 5.500 derece iken çekirdeği 15 milyon derecedir.",
+                "Satürn'ün uydusu Titan, Dünya'ya en çok benzeyen (atmosferi olan) gökcismidir.",
+                "Bir astronotun koku duyusu uzayda değişebilir.",
+                "Beyaz cüceler, yakıtı biten yıldızların çökmüş kalıntılarıdır.",
+                "Dünya'nın manyetik alanı bizi güneş radyasyonundan korur.",
+                "Karanlık madde, evrenin yaklaşık %27'sini oluşturur ama görünmezdir.",
+                "ISS'deki astronotlar her gün 16 kez gün doğumu ve batımı görürler.",
+                "Uzaydan bakıldığında Çin Seddi çıplak gözle görülemez (şehir ışıkları daha kolay görülür).",
+                "Güneş Sistemi'ndeki en rüzgarlı gezegen Neptün'dür.",
+                "Gökadalar birbirinden sürekli uzaklaşmaktadır; evren genişlemektedir.",
+                "En parlak yıldız Sirius'tur.",
+                "Uzay radyasyonu hücre yapısına zarar verebilir, bu yüzden koruma çok önemlidir.",
+                "Dünya'ya her yıl yaklaşık 40 bin ton uzay tozu düşmektedir.",
+                "Kara deliklerin merkezinde 'tekillik' denilen sonsuz yoğunlukta bir nokta vardır.",
+                "Exoplanet, Güneş Sistemi dışındaki bir yıldıza bağlı gezegenlere denir.",
+                "Işık yılı bir zaman birimi değil, mesafedir (yaklaşık 9.5 trilyon km)."
+            ],
+
+            "Oyun": [
+                "Dünyanın en çok satan oyunu Minecraft, 300 milyondan fazla kopya satmıştır.",
+                "Pac-Man'in hayaletlerinin her birinin farklı bir hareket yapay zekası vardır.",
+                "Super Mario Bros'taki bulutlar ve çalılar aslında aynı grafiğin farklı renkleridir.",
+                "PlayStation 1 başlangıçta Nintendo için bir CD-ROM eklentisi olarak tasarlanmıştı.",
+                "Atari 2600'deki 'Adventure', tarihteki ilk 'Easter Egg'i (gizli mesaj) içeren oyundur.",
+                "Final Fantasy adı, Square şirketinin batmadan önceki son şansı olduğu için seçilmiştir.",
+                "The Sims aslında bir mimari tasarım simülasyonu olarak planlanmıştı.",
+                "Halo'daki Master Chief'in tasarımı, bir zırhlı araçtan esinlenilmiştir.",
+                "Dota 2, her yıl on milyonlarca dolarlık ödül havuzlarıyla esporu zirveye taşımıştır.",
+                "Pokemon'un yaratıcısı Satoshi Tajiri, çocukken böcek koleksiyonu yapıyordu.",
+                "Lara Croft karakterinin göğüs boyutları, bir tasarımcının yanlışlıkla mouse'u kaydırmasıyla büyümüştür.",
+                "GTA V'in haritası yaklaşık 130 kilometrekaredir.",
+                "Sonic'in düşmanı Dr. Eggman, başlangıçta oyunun ana kahramanı adayıydı.",
+                "Tetris'in müziği aslında 'Korobeiniki' adlı bir Rus halk şarkısıdır.",
+                "Dünyanın ilk ticari arcade oyunu 'Computer Space'dir (1971).",
+                "Roblox'un kurucuları oyunu ilk olarak 'Interactive Physics' ismiyle geliştirdi.",
+                "Nintendo, 1889 yılında oyun kartı üreticisi olarak kurulmuştur.",
+                "Snake (Yılan) oyunu ilk kez 1976 yılında 'Blockade' ismiyle çıkmıştır.",
+                "Oyunlardaki 'Kombo' sistemi ilk kez Street Fighter II'de bir hata olarak ortaya çıkmıştır.",
+                "Fortnite'ın 'Battle Royale' modu sadece 2 ayda geliştirilmiştir.",
+                "League of Legends, her ay 100 milyondan fazla aktif oyuncuya sahiptir.",
+                "Game Boy, Ay'a giden Apollo 11 bilgisayarından daha güçlüdür.",
+                "Spyro the Dragon'un uçuş mekanikleri için NASA mühendislerinden yardım alınmıştır.",
+                "Call of Duty: Modern Warfare 2, ilk 24 saatte 4.7 milyon kopya satmıştır.",
+                "Pac-Man, Japonya'da kadın oyuncuları sektöre çekmek için 'yemek' temalı yapılmıştır.",
+                "Minecraft'ın yaratıcısı Notch, oyunu Microsoft'a 2.5 milyar dolara satmıştır.",
+                "World of Warcraft'ta bir dönem yanlışlıkla yayılan bir virüs (kan salgını) bilim insanları tarafından incelenmiştir.",
+                "The Legend of Zelda'daki Link karakteri Peter Pan'dan esinlenilmiştir.",
+                "İlk video oyunu turnuvası 1972'de Stanford Üniversitesi'nde 'Spacewar' için yapılmıştır.",
+                "Counter-Strike, Half-Life oyununun bir 'modu' olarak iki öğrenci tarafından başlatıldı.",
+                "Discord, başlangıçta sadece oyuncuların oyun oynarken konuşması için tasarlanmıştı.",
+                "Among Us, yayınlanmasından 2 yıl sonra popüler olmuştur.",
+                "Wii Sports, Nintendo'nun en çok satan oyunu ünvanına sahiptir (konsolla verildiği için).",
+                "PlayStation 2'nin tasarımı, eski bir Atari bilgisayar modelinden esinlenilmiştir.",
+                "Assassin's Creed aslında bir Prince of Persia yan oyunu olarak planlanmıştı.",
+                "Hideo Kojima, Metal Gear Solid'i yaparken bir film yönetmeni gibi çalışmıştır.",
+                "PUBG, modern 'Battle Royale' türünün temelini atan oyundur.",
+                "Doom (1993), o dönemde bilgisayarlarda Windows'tan daha fazla kuruluydu.",
+                "Half-Life 2'deki karakter yüzleri gerçek insanların fotoğraflarından taranmıştır.",
+                "Portal oyunundaki 'Pasta bir yalandır' repliği internet tarihinin en ünlü şakalarından biridir.",
+                "Elden Ring'in dünyasını yazmak için George R.R. Martin ile çalışılmıştır.",
+                "Video oyunları, çocukların el-göz koordinasyonunu cerrahlardan daha iyi yapabilir.",
+                "God of War'daki Kratos'un dövmeleri başlangıçta maviydi ama Diablo ile karışmaması için kırmızı yapıldı.",
+                "İlk ev konsolu Magnavox Odyssey'dir ve içinde hiç işlemci yoktu.",
+                "Nintendo'nun ismi 'Şansı göklere bırak' anlamına gelir.",
+                "Uncharted serisindeki Nathan Drake'in fiziksel tasarımı Johnny Knoxville'den esinlenilmiştir.",
+                "Crash Bandicoot'un kod adı 'Sonic's Ass' idi (arkadan göründüğü için).",
+                "BioShock'taki 'Little Sister' karakterleri başlangıçta böcek olarak tasarlanmıştı.",
+                "Silent Hill'deki ünlü sis efekti, donanım yetersizliğini gizlemek için kullanılmıştır.",
+                "Skyrim'de yaklaşık 60 bin satır seslendirme diyaloğu bulunur.",
+                "Dünyanın en küçük oyun konsolu bir anahtarlık boyutundaki 'Thumby'dir.",
+                "Red Dead Redemption 2'nin senaryosu 2000 sayfadan fazladır.",
+                "Tekken'in yaratıcıları, hareketleri gerçek dövüşçülerin verilerini kaydederek yapmıştır.",
+                "Fallout'un ikonik maskotu Vault Boy, aslında nükleer patlamaya karşı 'baş parmak kuralı'nı gösterir.",
+                "Esport artık bazı ülkelerde resmi spor branşı olarak tanınmaktadır."
+            ],
+
+
+            "Hayvanlar": [
+                "Kargalar, kendilerine kötü davranan insanların yüzlerini 5 yıl boyunca unutmazlar.",
+                "Su samurları uyurken akıntıya kapılmamak için birbirlerinin elini tutarlar.",
+                "Zürafaların ses telleri yoktur, bu yüzden tamamen sessiz hayvanlardır.",
+                "Ahtapotların 3 kalbi ve mavi kanı vardır.",
+                "Deniz atları, erkeklerin doğum yaptığı tek canlı türüdür.",
+                "Karıncalar 24 saatlik bir dilimde sadece 8 dakika uyurlar.",
+                "Mavi balinaların dili bir filin ağırlığı kadardır.",
+                "Kutup ayılarının derisi aslında siyahtır, tüyleri ise şeffaftır.",
+                "Sincaplar her yıl sakladıkları palamutların yerini unutarak binlerce ağacın büyümesini sağlar.",
+                "İneklerin en iyi arkadaşları vardır ve onlardan ayrıldıklarında stres yaparlar.",
+                "Kelebekler ayaklarıyla tat alırlar.",
+                "Bir devekuşunun gözü, beyninden daha büyüktür.",
+                "Filler, zıplayamayan tek memeli hayvan türüdür.",
+                "Arılar saniyede 200 kez kanat çırparlar.",
+                "Karideslerin kalbi kafalarının içinde bulunur.",
+                "Salyangozlar kesintisiz olarak 3 yıl boyunca uyuyabilirler.",
+                "Panda yavruları doğduklarında bir fareden daha küçüktürler.",
+                "Aslan sürülerinde avın %90'ını dişiler yapar.",
+                "Yarasalar bir mağaradan çıkarken her zaman sola dönerler.",
+                "Sinek kuşları geriye doğru uçabilen tek kuş türüdür.",
+                "Flamingolar sadece kafaları baş aşağıyken yemek yiyebilirler.",
+                "Köpeklerin koku alma yetisi, insanlarınkinden 10.000 kat daha güçlüdür.",
+                "Kediler hayatlarının %70'ini uyuyarak geçirirler.",
+                "Baykuşlar göz bebeklerini hareket ettiremezler, bu yüzden kafalarını 270 derece çevirirler.",
+                "Karıncayiyenler günde yaklaşık 35.000 karınca ve termit yerler.",
+                "Yunuslar birbirlerine isimleriyle hitap ederler (ıslık sesleri ile).",
+                "Timsahlar daha derine dalabilmek için taş yutarlar.",
+                "Bir istiridye hayatı boyunca birkaç kez cinsiyet değiştirebilir.",
+                "Kangurular geri geri yürüyemezler.",
+                "Develerin üç tane göz kapağı vardır.",
+                "Bal arıları bir kilogram bal yapmak için 4 milyondan fazla çiçekten öz toplar.",
+                "Pireler, kendi boylarının 200 katı yüksekliğe zıplayabilirler.",
+                "Eşeklerin gözleri, dört bacağını birden görebilecekleri bir yerdedir.",
+                "Kaplanların sadece tüyleri değil, derileri de çizgilidir.",
+                "Fareler gıdıklandıklarında insanlar gibi gülerler (ancak sesleri duyulmaz).",
+                "Keçilerin göz bebekleri dikdörtgen şeklindedir, bu onlara 320 derecelik görüş sağlar.",
+                "Kambur balinaların şarkıları okyanusun öbür ucundan duyulabilir.",
+                "Dünyadaki toplam karınca ağırlığı, toplam insan ağırlığından fazladır.",
+                "Hamam böcekleri kafaları kopsa bile 1 hafta daha yaşayabilirler.",
+                "Albatros kuşları uçarken uyuyabilirler.",
+                "Ağaçkakanlar saniyede 20 kez ağaca vurabilirler.",
+                "Koalalar günde 22 saate kadar uyurlar.",
+                "Siyah panter diye bir tür yoktur; onlar aslında siyah renkli leopar veya jaguarlardır.",
+                "Deniz analarının beyni, kalbi ve kemikleri yoktur.",
+                "Kunduzların dişleri turuncudur çünkü demir içerir.",
+                "Sülüklerin vücudunda tam 32 tane beyin bulunur.",
+                "Goriller tıpkı insanlar gibi grip olabilirler.",
+                "Ornitorenkler hem yumurtlayan hem de süt veren nadir canlılardandır.",
+                "Bukalemunların dilleri, vücutlarından iki kat daha uzun olabilir.",
+                "Balinalar uyurken beyinlerinin sadece yarısını dinlendirirler."
+
+            ],
+            "Coğrafya": [
+                "Dünyanın en derin yeri Mariana Çukuru'na bir taş atsanız dibe inmesi 1 saat sürer.",
+                "Rusya, yüzölçümü olarak Plüton gezegeninden daha büyüktür.",
+                "İstanbul, iki kıta üzerine kurulu dünyadaki tek mega kenttir.",
+                "İzlanda'da hiç sivrisinek bulunmaz.",
+                "Sahra Çölü'ne 1979 yılında kar yağmıştır.",
+                "Dünyadaki tatlı suyun %70'i Antarktika'daki buzulların içindedir.",
+                "Kanada, dünyadaki tüm göllerin toplamından daha fazla göle sahiptir.",
+                "Avustralya'nın genişliği Ay'ın çapından daha büyüktür.",
+                "Everest zirvesi her yıl yaklaşık 4 milimetre yükselir.",
+                "Afrika, dört yarım kürede de toprağı olan tek kıtadır.",
+                "Amazon Nehri'nin üzerinden geçen tek bir köprü bile yoktur.",
+                "Ölü Deniz o kadar tuzludur ki suda batmak imkansızdır.",
+                "Fransa, dünyada en çok saat dilimine (12 adet) sahip olan ülkedir.",
+                "Vatikan şehri, dünyanın en küçük ülkesidir.",
+                "Nil Nehri, dünyanın en uzun nehridir ve 11 ülkeden geçer.",
+                "Suudi Arabistan'da hiç nehir bulunmaz.",
+                "Atacama Çölü'ne bazı bölgelerine 400 yıldır yağmur yağmamıştır.",
+                "Yeni Zelanda'da insan sayısından daha fazla koyun vardır.",
+                "Dünyanın en alçak noktası deniz seviyesinden 430 metre aşağıdadır (Lut Gölü).",
+                "Moğolistan, dünyada metrekareye en az insanın düştüğü ülkedir.",
+                "Dünyadaki en büyük ada Grönland'dır (Avustralya kıta sayıldığı için).",
+                "Japonya tam 6.852 adadan oluşmaktadır.",
+                "Hollanda'nın topraklarının %25'i deniz seviyesinin altındadır.",
+                "Monako, New York'taki Central Park'tan daha küçük bir ülkedir.",
+                "Antarktika, dünyanın en büyük çölü olarak kabul edilir (soğuk çöl).",
+                "Dünyanın en eski kenti Suriye'deki Şam şehridir.",
+                "Brezilya'da 4.000'den fazla havaalanı vardır (ABD'den sonra ikinci).",
+                "Finlandiya'da tam 187.888 adet göl bulunmaktadır.",
+                "Çin'in 5 farklı saat dilimi olması gerekirken tüm ülke tek bir saat dilimini kullanır.",
+                "Hawaii her yıl Alaska'ya 7 santimetre daha yaklaşır.",
+                "Dünyanın en yüksek şelalesi olan Angel Şelalesi, bir gökdelenden 15 kat daha yüksektir.",
+                "Teksas eyaleti, tüm Avrupa ülkelerinden daha büyüktür.",
+                "Büyük Set Resifi, uzaydan görülebilen yaşayan tek yapıdır.",
+                "San Francisco'daki dik yokuşlar nedeniyle binaların çoğu yamuk inşa edilmiştir.",
+                "Himalayalar'da fosilleşmiş deniz canlıları bulunmuştur (eskiden okyanus tabanıydı).",
+                "Grönland aslında yeşil değildir, İzlanda ise aslında buzlarla kaplıdır (isimleri şaşırtıcıdır).",
+                "Rusya'da 11 farklı saat dilimi aynı anda yaşanır.",
+                "Dünyanın en kalabalık adası Java'da 140 milyondan fazla insan yaşar.",
+                "İsviçre'nin ordusu olmasına rağmen 200 yıldır hiç savaşa girmemiştir.",
+                "Meksika Şehri her yıl yaklaşık 10 santimetre batmaktadır.",
+                "Nepal bayrağı dikdörtgen olmayan tek ülke bayrağıdır.",
+                "Sibirya, dünyadaki ormanların %25'ine ev sahipliği yapar.",
+                "Bangladeş'te yazın okullar suyun üzerinde yüzen gemilerde yapılır.",
+                "Dünyadaki tüm altınların %99'u dünyanın çekirdeğindedir.",
+                "Afrika'daki Victoria Şelaleleri'nin sesi 40 kilometre öteden duyulabilir.",
+                "Dünya üzerindeki en uzun kesintisiz yol Rusya'dan Portekiz'e kadardır.",
+                "Antarktika'da 'Kan Şelalesi' denilen kırmızı renkli bir şelale akar (demir oksit yüzünden).",
+                "İtalya'da sadece tek bir McDonald's şubesi olan şehirler vardır (gastronomi koruması).",
+                "Pasifik Okyanusu, tüm kara parçalarının toplamından daha geniş bir alanı kaplar.",
+                "Kuzey Kutbu'nda toprak yoktur, sadece yüzen dev buz kütleleri vardır."
+            ],
+
+            "Spor": [
+
+                "Modern futbolun ilk kuralları 1863 yılında Londra'da bir meyhanede belirlenmiştir.",
+                "Golf, Ay yüzeyinde oynanan ilk ve tek spordur.",
+                "Basketbol ilk icat edildiğinde şeftali sepetlerine top atılarak oynanıyordu.",
+                "Olimpiyat halkalarındaki 5 renk, dünyadaki tüm bayraklarda bulunan en az bir rengi temsil eder.",
+                "Bir Formula 1 aracı, tünel tavanında sürüş yapabilecek kadar aerodinamik yere basma kuvvetine sahiptir.",
+                "Masa tenisi (Pinpon) ilk olarak İngiltere'de akşam yemeğinden sonra eğlence olarak başlamıştır.",
+                "Beyzbol toplarının ömrü profesyonel maçlarda ortalama sadece 7 saattir.",
+                "Dünyanın en hızlı sporu badminton'dur; smash hızı saatte 400 km'yi geçebilir.",
+                "Eskrimciler arasındaki mücadele o kadar hızlıdır ki puanları belirlemek için sensörlü kıyafetler kullanılır.",
+                "Satranç, Olimpiyat Komitesi tarafından bir spor dalı olarak kabul edilmektedir.",
+                "Michael Phelps, toplamda 23 altın madalya ile Olimpiyat tarihinin en başarılı sporcusudur.",
+                "Futbolda sarı ve kırmızı kart uygulaması ilk kez 1970 Dünya Kupası'nda başlamıştır.",
+                "Dünyanın en eski spor dalı güreş olarak kabul edilir (MÖ 7000'li yıllara ait çizimler vardır).",
+                "Bir golf topunun üzerindeki çukurların sayısı ortalama 336'dır (havada daha iyi süzülmesini sağlar).",
+                "Boks eldivenleri, çıplak elden daha tehlikelidir çünkü beyne giden darbe sayısını artırır.",
+                "Tenis maçlarındaki 'Love' (sıfır) terimi, Fransızca yumurta anlamına gelen 'l'oeuf' kelimesinden gelir.",
+                "Voleybol, basketbol ve tenisin birleşimi olarak 1895 yılında icat edilmiştir.",
+                "Dünya Kupası'nı kazanan takıma verilen kupa tamamen altındır ve 6.1 kg ağırlığındadır.",
+                "NFL (Amerikan Futbolu) maçlarında topun fiilen hareket ettiği süre sadece 11 dakikadır.",
+                "İlk modern Olimpiyat Oyunları 1896 yılında Atina'da düzenlenmiştir.",
+                "Efsanevi futbolcu Pele, kariyeri boyunca 1281 gol atmıştır.",
+                "Bir maraton koşusu tam olarak 42.195 metredir.",
+                "Sumo güreşçileri günde yaklaşık 20.000 kalori tüketirler.",
+                "Okçuluk, Bhutan'ın milli sporudur.",
+                "Beşiktaş, 1903 yılında jimnastik kulübü olarak kurulmuştur.",
+                "Körling sporunda kullanılan taşlar sadece İskoçya'daki özel bir adadan çıkarılan granitten yapılır.",
+                "Dünyanın en çok izlenen spor etkinliği FIFA Dünya Kupası finalidir.",
+                "Bir beyzbol topunda tam olarak 108 dikiş bulunur.",
+                "Rugby sporu, bir futbol maçında bir oyuncunun topu eline alıp koşmasıyla tesadüfen doğmuştur.",
+                "Usain Bolt, 100 metreyi 9.58 saniyede koşarak dünya rekorunu elinde tutmaktadır.",
+                "NBA logosundaki siluet, efsane oyuncu Jerry West'e aittir.",
+                "Hentbolun kökenleri Antik Yunanistan'a kadar dayanır.",
+                "Buz hokeyi diski (puck), maçtan önce donması için buza konulur (zıplamasını önlemek için).",
+                "Dünyanın en pahalı spor kulübü Dallas Cowboys'tur (NFL).",
+                "Cristiano Ronaldo, Instagram'da 600 milyon takipçiyi geçen ilk kişidir.",
+                "Kadınlar Olimpiyatlara ilk kez 1900 Paris Oyunları'nda katılmıştır.",
+                "At yarışı, 'Kralların Sporu' olarak bilinir.",
+                "Snooker (bilardo), Hindistan'daki İngiliz askerleri tarafından geliştirilmiştir.",
+                "Sörf sporunun kökeni antik Polinezya halklarına dayanır.",
+                "Tour de France bisiklet yarışının ilk galibi 1903'te bir bacacıydı.",
+                "Brezilya, Dünya Kupası'na her turnuvada katılan tek ülkedir.",
+                "Badminton topları (shuttlecock) kaz tüylerinden yapılır.",
+                "Lionel Messi, 8 kez Ballon d'Or ödülünü kazanan tek futbolcudur.",
+                "Paraşütle atlama sporu, uçaklardan önce icat edilmiştir.",
+                "Bowling lobutları, darbelere dayanıklı olması için akçaağaçtan yapılır.",
+                "Efsane boksör Muhammed Ali, profesyonel kariyerinde sadece 5 kez yenilmiştir.",
+                "Buz pateni ilk başlarda kemikten yapılan patenlerle donmuş göllerde yapılıyordu.",
+                "Türkiye'nin ilk milli futbol maçı 1923'te Romanya ile oynanmıştır.",
+                "Formula 1 lastikleri, yarış sırasında o kadar ısınır ki bir sigarayı yakabilir.",
+                "Kriket maçları bazen 5 gün sürebilir ve berabere bitebilir."
+            ],
+            "Sanat": [
+                "Leonardo da Vinci, Mona Lisa'nın dudaklarını tamamlamak için tam 12 yıl harcamıştır.",
+                "Pablo Picasso, tam adı 23 kelimeden oluşan bir ressamdır.",
+                "Vincent van Gogh, ömrü boyunca sadece bir adet tablo satabilmiştir.",
+                "Louvre Müzesi'ndeki her esere 30 saniye baksanız, tüm müzeyi gezmeniz 100 gün sürer.",
+                "Michelangelo, Sistine Şapeli'nin tavanını boyarken felç olma riskiyle karşılaşmış ve gözleri zarar görmüştür.",
+                "Salvador Dali, restoranlarda hesap ödememek için çeklerin arkasına çizim yapardı (kimse o sanat eserini bozdurmazdı).",
+                "Mona Lisa tablosunun kaşları yoktur; o dönemde kadınların kaşlarını kazıtması modaydı.",
+                "Claude Monet, eserlerini yaparken görme yetisini büyük oranda kaybetmişti.",
+                "Dünyanın en büyük heykeli olan Hindistan'daki 'Birlik Heykeli', 182 metre yüksekliğindedir.",
+                "Frida Kahlo, yatağa bağımlı olduğu dönemlerde tavanına takılan ayna sayesinde otoportrelerini yapmıştır.",
+                "Picasso, bir keresinde ısınmak için kendi tablolarından bazılarını yakmıştır.",
+                "Antik Yunan heykelleri aslında bembeyaz değildi; zamanla boyaları döküldüğü için öyle görünüyorlar.",
+                "Sistine Şapeli'ndeki 'Adem'in Yaratılışı' tablosunda Tanrı'nın arkasındaki şekil bir insan beynine benzer.",
+                "Andy Warhol, Campbell's çorba konservelerini 20 yıl boyunca her öğlen içtiği için resmetmiştir.",
+                "Johannes Vermeer, meşhur 'İnci Küpeli Kız' tablosunu yaparken kamera benzeri bir düzenek kullanmıştır.",
+                "Eyfel Kulesi aslında Barselona'ya inşa edilecekti ancak şehir yönetimi reddetti.",
+                "Edvard Munch'un 'Çığlık' tablosu, gökyüzünün volkanik bir patlama sonrası kızıllığından esinlenmiştir.",
+                "Rembrandt'ın 'Gece Devriyesi' tablosu aslında gündüzü tasvir eder, ancak vernik karardığı için gece sanılır.",
+                "Jackson Pollock, fırçayı tuvale sürmeden 'damlatma' tekniğiyle devasa tablolar yapmıştır.",
+                "Dünyanın en pahalı tablosu, Leonardo da Vinci'nin 450 milyon dolara satılan 'Salvator Mundi' eseridir.",
+                "Anıtkabir'in mimarları Emin Onat ve Orhan Arda'dır.",
+                "Heykeltıraş Rodin'in 'Düşünen Adam' heykeli aslında İlahi Komedya'daki Dante'yi temsil eder.",
+                "Banksy, eserlerini gizlice yapan ve gerçek kimliği bilinmeyen dünyanın en ünlü sokak sanatçısıdır.",
+                "Mimar Sinan, ömrü boyunca 375 adet eser inşa etmiştir.",
+                "Sürrealizm akımının en büyük temsilcisi Salvador Dali'nin evcil bir karıncayiyeni vardı.",
+                "Japon sanatçı Yayoi Kusama, eserlerinde sadece noktalar kullanarak sonsuzluk hissi yaratır.",
+                "Origami, Japonya'da sadece bir sanat değil, bazen dini törenlerin bir parçasıdır.",
+                "Ebru sanatı, suyun üzerine boya damlatılarak yapılan 'bulut' anlamına gelen bir Türk sanatıdır.",
+                "Mimar Sinan'ın 'çıraklık eserim' dediği yapı Şehzade Camii'dir.",
+                "Beethoven, sağır olduktan sonra bile en ünlü senfonilerini bestelemeye devam etmiştir.",
+                "Dünyanın en küçük heykeli bir iğne deliğinin içine sığabilir.",
+                "Mona Lisa tablosu 1911'de çalındığında, şüphelilerden biri Pablo Picasso'ydu.",
+                "Eski Mısır hiyeroglifleri hem resim hem de sestir.",
+                "Rönesans kelimesi 'Yeniden Doğuş' anlamına gelir.",
+                "Fransız ressam Henri Matisse, yaşlanınca resim yapamayınca kağıt kesme sanatına yönelmiştir.",
+                "Mimar Sinan'ın 'ustalık eserim' dediği Selimiye Camii, UNESCO Dünya Mirası listesindedir.",
+                "Orhun Yazıtları, Türk dilinin ve edebiyatının bilinen en eski yazılı belgeleridir.",
+                "İlk sinema filmi 1895 yılında Lumiere Kardeşler tarafından gösterilmiştir.",
+                "Mozart, henüz 5 yaşındayken ilk bestesini yapmıştır.",
+                "Viyana Filarmoni Orkestrası'na kadın müzisyenler ancak 1997'den itibaren kabul edilmeye başlanmıştır.",
+                "Guernica tablosu, Picasso tarafından savaşın dehşetini anlatmak için yapılmıştır.",
+                "Çin Seddi'nin yapımında kullanılan harçta yapışkan pirinç ununun kullanıldığı keşfedilmiştir.",
+                "Dünyanın en eski tapınağı olan Göbeklitepe, üzerindeki kabartmalarla bir açık hava müzesi gibidir.",
+                "Van Gogh'un 'Yıldızlı Gece' tablosu bir akıl hastanesindeki odasının penceresinden görünen manzaradır.",
+                "Mona Lisa'nın çalınması, tablonun dünyada bu kadar ünlü olmasını sağlayan olaydır.",
+                "Picasso, bir resmi bitirmeden başka bir resme asla başlamazdı.",
+                "Sultanahmet Camii, Türkiye'nin altı minareli ilk camisidir.",
+                "Ballet (Bale) kelimesi İtalyanca 'dans etmek' anlamına gelen 'ballare' kelimesinden gelir.",
+                "Graham Bell aslında işitme engelliler için bir cihaz yapmaya çalışırken telefonu icat etmiştir.",
+                "Osman Hamdi Bey'in 'Kaplumbağa Terbiyecisi' tablosu Türk resim sanatının en değerli eseridir."
+
+            ],
+            "Yiyecek": [
+                "Bal, asla bozulmayan tek gıdadır; 3000 yıllık firavun mezarlarında bulunan bal hala yenilebilir.",
+                "Ketçap, 1830'lu yıllarda Amerika'da ilaç olarak satılıyordu.",
+                "Dünyadaki en pahalı pizza 12.000 dolardır ve yapımı 72 saat sürer.",
+                "Çikolata bir zamanlar Aztekler tarafından para birimi olarak kullanılıyordu.",
+                "Patates cipsi, huysuz bir müşteriyi memnun etmeye çalışan bir aşçı tarafından tesadüfen icat edilmiştir.",
+                "Havuçlar aslında mor renkteydi; turuncu havuçlar 17. yüzyılda Hollandalılar tarafından üretildi.",
+                "Elmaların %25'i havadır, bu yüzden suda yüzebilirler.",
+                "Fıstık ezmesi, dinamit yapımında kullanılan gliserini içerir.",
+                "Patlıcan aslında bir meyvedir ve botanik olarak orman meyveleri sınıfına girer.",
+                "Dünyanın en çok tüketilen içeceği sudan sonra çaydır.",
+                "Ananasın yetişmesi tam iki yıl sürer.",
+                "Muzlar radyofoniktir; çok küçük miktarda potasyum izotopu içerirler.",
+                "Çilek, çekirdekleri dışarıda olan tek meyvedir.",
+                "Kaju fıstığı aslında bir meyvenin sapıdır ve kabuğu zehirlidir.",
+                "Dünyanın en acı biberi 'Dragon's Breath', bir insanı şoka sokacak kadar acıdır.",
+                "Krakerlerin üzerindeki delikler, pişerken hava kabarcığı oluşmasını engellemek içindir.",
+                "Beyaz çikolata aslında çikolata değildir; içinde kakao kitlesi bulunmaz.",
+                "İncirlerin içinde bazen ölü yaban arıları bulunur; meyve onları tamamen sindirir.",
+                "Dünyanın en eski sakızı 9.000 yaşındadır.",
+                "McDonald's saniyede yaklaşık 75 hamburger satmaktadır.",
+                "Domates, 1800'lerin sonuna kadar Avrupa'da zehirli sanılıyordu.",
+                "Fıstık bir baklagildir, fındık türü değildir.",
+                "Kahve çekirdekleri aslında bir meyvenin çekirdeğidir (kahve kirazı).",
+                "Sarımsak, Orta Çağ'da vampirlerden değil, hastalıklardan korunmak için kullanılıyordu.",
+                "Karpuzun %92'si sudur.",
+                "Şeker kamışı, dünyada en çok üretilen tarım ürünüdür.",
+                "Limonun içindeki şeker miktarı çilekten daha fazladır.",
+                "Ekmek, insanlık tarihinin en eski yapay gıdasıdır.",
+                "Süt, güneş ışığına maruz kaldığında içindeki vitaminleri kaybeder.",
+                "Pizza Margherita, İtalya bayrağının renklerini temsil eder (Domates: Kırmızı, Fesleğen: Yeşil, Peynir: Beyaz).",
+                "Kivi, bir portakaldan iki kat daha fazla C vitamini içerir.",
+                "Dünyanın en pahalı mantarı olan Beyaz Trüf mantarının kilosu binlerce dolardır.",
+                "Safran, dünyanın en pahalı baharatıdır (gramı altından pahalı olabilir).",
+                "Japonya'da kare şeklinde karpuzlar yetiştirilmektedir.",
+                "İlk dondurma Antik Çin'de kar ve pirincin karıştırılmasıyla yapılmıştır.",
+                "Kola, ilk icat edildiğinde içinde koka yaprakları özü vardı.",
+                "Zeytin ağaçları bin yıldan fazla yaşayabilir.",
+                "Armutlar olgunlaştıktan sonra bile tatlanmaya devam eden nadir meyvelerdendir.",
+                "Patlamış mısır, 4.000 yıl önce Aztekler tarafından keşfedilmiştir.",
+                "Günde bir elma yemek, kahve içmekten daha fazla enerji verebilir (doğal şeker sayesinde).",
+                "Peynir, dünyada en çok çalınan gıda ürünüdür.",
+                "Yumurta kabuğunda yaklaşık 17.000 adet küçük delik (gözenek) bulunur.",
+                "Tarçın aslında bir ağacın iç kabuğudur.",
+                "Vanilya özü, dünyadaki en zahmetli ikinci baharattır.",
+                "Hardal, tarihte bilinen en eski baharatlardan biridir.",
+                "Kurutulmuş meyveler, taze meyvelerden daha fazla kalori içerir.",
+                "Hindistan cevizi suyu, acil durumlarda kan plazması yerine kullanılabilir.",
+                "Mantar aslında bir bitki değil, bir mantar (fungi) türüdür.",
+                "Kavun, salatalık ile aynı aileden gelir.",
+                "Nutella, II. Dünya Savaşı sırasında çikolata kıtlığı nedeniyle fındık eklenerek icat edilmiştir."
+
+            ],
+            "Edebiyat": [
+
+                "Dünyanın en çok satan kitabı İncil'den sonra Don Kişot'tur.",
+                "Sherlock Holmes aslında hiçbir kitapta 'Basit, sevgili Watson' dememiştir.",
+                "Yüzüklerin Efendisi yazarı J.R.R. Tolkien, kitapları için tamamen yeni diller icat etmiştir.",
+                "Alice Harikalar Diyarında'nın yazarı Lewis Carroll, gerçek hayatta bir matematikçidir.",
+                "Harry Potter serisinin yazarı J.K. Rowling, ilk kitabı 12 farklı yayınevi reddettikten sonra basabilmiştir.",
+                "Dünyanın en uzun romanı 'Kayıp Zamanın İzinde', yaklaşık 1.2 milyon kelimedir.",
+                "Victor Hugo, Sefiller romanı yayınlandığında yayınevine sadece '?' yazan bir telgraf çekmiştir.",
+                "Agatha Christie, dünyada kitapları en çok dile çevrilmiş yazardır.",
+                "Küçük Prens, dünyada kutsal kitaplardan sonra en çok dile çevrilmiş eserdir.",
+                "Mary Shelley, Frankenstein romanını sadece 18 yaşındayken yazmıştır.",
+                "Shakespeare, İngilizceye 1.700'den fazla yeni kelime kazandırmıştır.",
+                "Robinson Crusoe, gerçek bir hikayeden (Alexander Selkirk) esinlenilmiştir.",
+                "Charles Dickens, her zaman kuzeye bakarak uyurdu (bunun yaratıcılığını artırdığına inanırdı).",
+                "Dünyanın en küçük kitabı sadece mikroskopla okunabilir.",
+                "Mark Twain, daktilo ile roman yazan ilk yazardır.",
+                "Dostoyevski, 'Kumarbaz' romanını borçlarını ödemek için sadece 26 günde yazmıştır.",
+                "George Orwell, '1984' romanını aslında 'Avrupa'daki Son Adam' olarak adlandıracaktı.",
+                "Pinokyo'nun orijinal hikayesinde karakter çok daha yaramaz ve karanlıktır.",
+                "Stephen King, 'Carrie' romanını çöpe atmıştı; eşi kurtarıp yazmaya devam etmesini istedi.",
+                "Paulo Coelho, 'Simyacı'yı sadece iki haftada yazmıştır.",
+                "Kafka, ölmeden önce tüm eserlerinin yakılmasını istemişti ama arkadaşı bu isteği yerine getirmedi.",
+                "Gulliver'in Gezileri, aslında dönemin siyasetini eleştiren sert bir hicivdir.",
+                "Jack Kerouac, 'Yolda' romanını 36 metrelik tek bir kağıt rulosuna yazmıştır.",
+                "Grimm Kardeşler, masallarını aslında çocuklar için değil, halk kültürü araştırması olarak yazmışlardı.",
+                "Simyacı romanı, hayattayken en çok dile çevrilen yazar olarak Guinness rekoruna sahiptir.",
+                "Dracula'nın yazarı Bram Stoker, Transilvanya'ya hiç gitmemiştir.",
+                "Moby Dick romanı ilk yayınlandığında başarısız olmuş ve yazarının ölümünden sonra ünlü olmuştur.",
+                "Herman Melville, Moby Dick'i yazarken gerçek bir 'beyaz balina' (Mocha Dick) efsanesinden etkilenmiştir.",
+                "James Joyce'un 'Ulysses' romanı, bir dönem müstehcen olduğu gerekçesiyle yasaklanmıştır.",
+                "Homer'in İlyada ve Odysseia eserleri, yüzyıllarca sözlü olarak aktarıldıktan sonra yazıya dökülmüştür.",
+                "Virginia Woolf, eserlerini genellikle ayakta durarak yazardı.",
+                "Sherlock Holmes karakteri, yazarın tıp hocası Joseph Bell'den esinlenilmiştir.",
+                "Fahrenheit 451, kağıdın tutuşma sıcaklığına ithafen bu ismi almıştır.",
+                "Savaş ve Barış romanında 500'den fazla karakter vardır.",
+                "Edgar Allan Poe, modern dedektif hikayelerinin babası kabul edilir.",
+                "Vakıf serisinin yazarı Isaac Asimov, robotik kelimesini icat eden kişidir.",
+                "J.D. Salinger, 'Çavdar Tarlasında Çocuklar' romanını savaş cephesindeyken yanında taşıyordu.",
+                "Jane Austen, tüm romanlarını isimsiz (Anonim) olarak yayınlamıştır.",
+                "Gutenberg Matbaası'nda basılan ilk büyük kitap İncil'dir.",
+                "Aşk-ı Memnu, Türk edebiyatının ilk modern romanı kabul edilir.",
+                "İstiklal Marşı, Mehmet Akif Ersoy tarafından 'Kahraman Ordumuza' ithaf edilmiştir.",
+                "Dede Korkut Hikayeleri, Türklerin destan döneminden halk hikayeciliğine geçiş eseridir.",
+                "Divan-ı Lügati't-Türk, Kaşgarlı Mahmud tarafından Araplara Türkçe öğretmek için yazılmıştır.",
+                "Kuyucaklı Yusuf, Sabahattin Ali'nin ilk romanıdır.",
+                "Nazım Hikmet, şiirlerini yazarken ritim tutmak için masaya vururdu.",
+                "Oğuz Atay'ın 'Tutunamayanlar' romanı, Türk edebiyatında postmodernizmin başlangıcıdır.",
+                "Yaşar Kemal, Nobel Edebiyat Ödülü'ne aday gösterilen ilk Türk yazardır.",
+                "Sait Faik Abasıyanık, modern Türk öykücülüğünün en önemli ismidir.",
+                "Orhan Pamuk, 2006 yılında Nobel Edebiyat Ödülü'nü kazanan ilk Türk vatandaşıdır.",
+                "Kutadgu Bilig, 'Mutluluk Veren Bilgi' anlamına gelir."
+
+            ],
+            "İlginç İcatlar": [
+
+                "İlk daktilo, körler için bir iletişim aracı olarak icat edilmişti.",
+                "Mikrodalga fırın, bir radar mühendisinin cebindeki çikolatanın erimesiyle tesadüfen keşfedildi.",
+                "Çakmak, kibritten önce icat edilmiştir (1823 vs 1826).",
+                "Bluetooth ismi, 10. yüzyılda yaşamış Viking Kralı Harald Bluetooth'tan gelir.",
+                "Tükenmez kalem, II. Dünya Savaşı pilotları yüksek irtifada sızdırmayan kalem ararken popüler oldu.",
+                "İnternet başlangıçta askeri amaçlı bir proje (ARPANET) olarak doğdu.",
+                "İlk bilgisayar mouse'u ahşaptan yapılmıştı.",
+                "Asansör freni icat edilmeden önce asansörler tehlikeli olduğu için pek kullanılmıyordu.",
+                "Kravat, Hırvat askerlerin boyunlarına taktığı atkılardan türemiştir.",
+                "Fonograf (ses kayıt cihazı), Thomas Edison'un en sevdiği icadıydı.",
+                "X-ışınları, kazara keşfedilen bir radyasyon türüdür.",
+                "İlk dijital kamera 1975'te yapıldı ve görüntü kaydetmesi 23 saniye sürüyordu.",
+                "Dünyanın ilk programlanabilir bilgisayarı ENIAC, 30 ton ağırlığındaydı.",
+                "Post-it notları, güçlü olmayan bir yapıştırıcı icat eden bir mühendis tarafından bulundu.",
+                "Dikenli tel, vahşi batıda arazileri çevirmek için icat edildiğinde 'şeytanın ipi' olarak adlandırılmıştı.",
+                "İlk araba radyosu, trafik güvenliğini tehlikeye attığı gerekçesiyle bazı yerlerde yasaklanmıştı.",
+                "Kayıtlı tarihteki ilk patent, 1421'de Floransa'da bir gemi tasarımına verilmiştir.",
+                "Televizyonun mucidi John Logie Baird, ilk görüntülerini bir kukla kullanarak iletmiştir.",
+                "SMS teknolojisi ilk başta sadece operatörlerin ağ durumunu bildirmesi için tasarlanmıştı.",
+                "Dünyanın ilk trafik lambası Londra'da 1868'de kuruldu ve gazla çalışıyordu.",
+                "Radyo, Nikola Tesla'nın patentleri üzerine inşa edilmiştir (Marconi daha sonra popüler yaptı).",
+                "Bulaşık makinesi, hizmetçilerin tabakları kırmasından bıkan zengin bir kadın tarafından icat edildi.",
+                "Teflon, bir buzdolabı gazı deneyi sırasında tesadüfen bulundu.",
+                "Konserve açacağı, konserve yiyeceklerin icadından tam 48 yıl sonra icat edilmiştir.",
+                "Walkman, Sony başkanının uçakta opera dinleyebilmesi için özel olarak tasarlanmıştı.",
+                "İlk cep telefonu araması 1973 yılında Motorola yöneticisi tarafından yapılmıştır.",
+                "Elektrikli süpürge ilk icat edildiğinde bir at arabası kadar büyüktü.",
+                "Karton süt kutuları, cam şişelerin kırılmasını önlemek için tasarlandı.",
+                "Güneş gözlükleri, 12. yüzyılda Çinli hakimlerin mahkemede ifadelerini gizlemek için kullanılıyordu.",
+                "Hesap makinesinin atası abaküs, binlerce yıl önce Mezopotamya'da kullanılıyordu.",
+                "Buzdolabı icat edilmeden önce yiyecekler 'buz kutularında' saklanıyordu.",
+                "Matbaa, kağıt paranın ve kitapların yaygınlaşmasını sağlayarak dünyayı değiştirdi.",
+                "Gözlük, 13. yüzyılda İtalya'da icat edilmiştir.",
+                "Kurşun kalemlerin içinde kurşun değil, grafit bulunur.",
+                "Ampulün icadında Edison binlerce farklı flaman denemiştir.",
+                "Teleskop, ilk olarak gemilerin uzaktan görülmesi için askeri amaçla kullanıldı.",
+                "Termometre, Galileo tarafından suyun genleşmesi prensibiyle icat edildi.",
+                "Dikiş makinesi icat edildiğinde, terziler işlerini kaybedecekleri korkusuyla fabrikaları basmıştı.",
+                "Radar, yarasaların yön bulma sisteminden esinlenerek geliştirilmiştir.",
+                "GPS (Küresel Konumlama Sistemi), başlangıçta sadece ABD ordusu içindi.",
+                "Naylon, ipeğe alternatif olarak laboratuvarda üretilen ilk sentetik liftir.",
+                "Bisiklet, at kıtlığı yaşanan bir dönemde ulaşım aracı olarak geliştirildi.",
+                "Paraşüt tasarımları, uçakların icadından yüzyıllar önce Da Vinci'nin çizimlerinde vardı.",
+                "Helikopterin çalışma prensibi, çocukların oynadığı 'pervane oyuncaklardan' esinlenilmiştir.",
+                "İlk sinema makinesi (Cinematographe), hem çekim hem de gösterim yapabiliyordu.",
+                "Lazer, ilk icat edildiğinde 'bir çözüm arayan problem' olarak tanımlanmıştı.",
+                "Barkod teknolojisi, Mors alfabesinin genişletilmesiyle ortaya çıktı.",
+                "Stetoskop, bir doktorun hastasının kalbini dinlemek için kağıdı rulo yapmasıyla bulundu.",
+                "Pusula, ilk olarak Çinliler tarafından fal bakmak ve yer tespiti için kullanılıyordu.",
+                "Tekerlek, ulaşım için kullanılmadan önce çömlekçi çarkı olarak kullanılmıştır."
+
+            ],
+
+            "Psikoloji": [
+    "Bir alışkanlığın tam olarak yerleşmesi ortalama 66 gün sürer.",
+    "İnsan beyni, reddedilme acısını fiziksel bir yaralanma gibi algılar.",
+    "En sevdiğiniz şarkının favoriniz olma sebebi, onu hayatınızdaki duygusal bir olayla eşleştirmenizdir.",
+    "Karar verirken yabancı bir dilde düşünmek, daha mantıklı kararlar vermenizi sağlar.",
+    "Eğer hedeflerinizi başkalarına anlatırsanız, onları gerçekleştirme ihtimaliniz azalır çünkü beyin o tatmini almış sayılır.",
+    "İnsanların %70'i eski anılarını kafalarında tekrar canlandırıp 'keşke şöyle deseydim' diye düşünür.",
+    "Mavi renk, beyinde sakinleştirici hormonların salgılanmasına neden olur.",
+    "Birisiyle 3 saniyeden fazla göz teması kurmak, ya aşkın ya da bir kavganın habercisidir.",
+    "Plasebo etkisi o kadar güçlüdür ki, boş bir hapın işe yarayacağına inanmak vücudu gerçekten iyileştirebilir.",
+    "İnsanlar meşgul olduklarında daha mutlu hissetme eğilimindedirler.",
+    "Zeki insanlar kendilerini küçümseme, daha az zeki olanlar ise kendilerini abartma eğilimindedir (Dunning-Kruger Etkisi).",
+    "Yatağa girmeden önceki son 5 dakikada düşündükleriniz, bilinçaltınızı tüm gece etkiler.",
+    "Sarılmak, vücutta 'mutluluk hormonu' olarak bilinen oksitosin salgılanmasını sağlar.",
+    "İnsan beyni aynı anda sadece 3-4 bilgiyi tam olarak aklında tutabilir.",
+    "Yalnızlık hissi, günde 15 dal sigara içmek kadar sağlığa zararlıdır.",
+    "İstemsizce gülümsemek bile ruh halinizi gerçekten iyileştirebilir.",
+    "Göz bebekleri, sevdiğiniz birine baktığınızda %45 oranında büyür.",
+    "Bir şeyi unutmak istiyorsanız, onu başka bir şeye odaklanarak 'aktif olarak' bastırmanız gerekir.",
+    "Rüyaların %90'ı uyandıktan sonraki ilk 1 dakikada unutulur.",
+    "İnsanların çoğu, mesaj yazarken yüz yüze söyleyemeyecekleri şeyleri daha rahat söyler.",
+    "Aşık olmak, beyinde kokain kullanımıyla benzer bir kimyasal tepkime yaratır.",
+    "Nostalji hissi, insanı daha sıcak ve güvende hissettirir.",
+    "Paranızı eşyalara değil, deneyimlere (gezi, konser vb.) harcamak sizi daha çok mutlu eder.",
+    "Beynimiz, olumsuz haberleri olumlu haberlerden daha hızlı algılar ve daha uzun süre hatırlar.",
+    "Bir grubun içinde gülerken, insanlar farkında olmadan grupta kendilerine en yakın hissettikleri kişiye bakarlar.",
+    "Başkalarına yardım etmek, ömrü uzatan bir psikolojik tatmin sağlar.",
+    "Sürekli başkalarını mutlu etmeye çalışan insanlar, genellikle en çok yalnızlık çekenlerdir.",
+    "Fobiler, genetik olarak atalarımızdan kalan korkuların bir yansıması olabilir.",
+    "Mükemmeliyetçilik aslında bir başarı isteği değil, hata yapma korkusudur.",
+    "Duygusal acılar, beyinde fiziksel acı merkezlerini aktif hale getirir.",
+    "Hızlı konuşan insanlar genellikle kendilerini daha iyi ifade edemediklerini düşünenlerdir.",
+    "İnsanların %80'i şikayetlerini dile getirerek rahatlamaya çalışır.",
+    "Aşırı uyumak, bazen beynin gerçeklikten kaçma çabasıdır.",
+    "Duygusal zekası yüksek insanlar, kendi hatalarını kabul etmeye daha yatkındır.",
+    "Bir kişinin karakterini, kendisinden alt mevkideki birine nasıl davrandığından anlayabilirsiniz.",
+    "İnsan beyni, tanımadığı yüzleri rüyasında göremez; rüyanızdaki herkesi bir yerde görmüşsünüzdür.",
+    "Özlem duymak, yaratıcılığı artıran bir tetikleyici olabilir.",
+    "Korku filmi izlemek, vücudun kalori yakmasını sağlar (adrenalin sayesinde).",
+    "Gülmek, bağışıklık sistemini %40 oranında güçlendirir.",
+    "Kendine güvenen insanlar, başkalarını eleştirmek yerine desteklemeyi tercih eder.",
+    "Zihnimiz, uyurken bile birisinin bize baktığını hissedebilir.",
+    "Aynı anda birden fazla iş yapmak (multitasking) aslında beynin verimliliğini %40 düşürür.",
+    "Koku duyusu, anıları tetikleyen en güçlü duyudur.",
+    "Birini ikna etmek istiyorsanız, ayakta durmak yerine otururken konuşun.",
+    "Yazı yazmak, düşünceleri organize etmenin en etkili psikolojik yoludur.",
+    "İnsanlar genellikle ilk gördükleri bilgiye daha fazla inanma eğilimindedir (Çapalama Etkisi).",
+    "Büyük kararlar vermeden önce uyumak, beynin bilgiyi daha iyi işlemesini sağlar.",
+    "Gözlerini kapatmak, bir şeyi hatırlama kapasitesini artırır.",
+    "Müzik dinlemek, fiziksel acıyı %20 oranında azaltabilir.",
+    "Hayal kurmak, beynin problem çözme yeteneğini geliştirir."
+],
+
+"Mitoloji": [
+    "Yunan mitolojisinde Pandora'nın kutusundan çıkan son şey 'Umut'tur.",
+    "İskandinav mitolojisinde Thor, devlerle savaşmak için keçilerin çektiği bir arabaya binerdi.",
+    "Mısır mitolojisinde kalp, öbür dünyada bir tüy ile tartılırdı.",
+    "Medusa'nın kafasındaki her bir yılanın kendi iradesi ve ismi vardı.",
+    "İskandinav tanrısı Odin, bilgiye ulaşmak için bir gözünü feda etmiştir.",
+    "Yunan mitolojisinde Hades kötü biri değil, sadece yer altı dünyasının düzeninden sorumlu ciddi bir tanrıydı.",
+    "Truva atı efsanesinde atın içinde tam 30 seçkin asker gizlenmişti.",
+    "Anka kuşu (Phoenix) küllerinden doğmadan önce 500 yıl yaşardı.",
+    "Mitolojide Pegasus, Medusa'nın kafası kesildiğinde gövdesinden doğmuştur.",
+    "Yunan tanrısı Hermes, hırsızların, tüccarların ve habercilerin tanrısıydı.",
+    "Türk mitolojisinde dünyayı taşıyan ejderhalara 'Evren' denirdi.",
+    "İskandinav mitolojisinde dünya bir ağacın (Yggdrasil) üzerindedir.",
+    "Zeus, hedeflerine ulaşmak için sık sık hayvan kılığına girerdi.",
+    "Mısır tanrısı Anubis, ölülerin ruhlarını yargılanmaya götüren bir çakal kafalı tanrıdır.",
+    "Valkürler, savaşta ölen cesur savaşçıları Valhalla'ya taşımakla görevliydi.",
+    "Narcissus, sudaki yansımasına aşık olup orada öldüğü için nergis çiçeğine dönüşmüştür.",
+    "Poseidon'un üç dişli mızrağı (Trident), denizleri ve depremleri kontrol ederdi.",
+    "Japon mitolojisinde 'Kitsune' denilen tilkiler, ne kadar yaşlıysa o kadar çok kuyruğa sahip olur (en fazla 9).",
+    "Mitolojide Aşil'in tek zayıf noktası topuğuydu çünkü annesi onu kutsal suya oradan tutarak batırmıştı.",
+    "Yunan mitolojisinde şarap ve eğlence tanrısı Dionysos'tur.",
+    "Minotor, yarı insan yarı boğa olan ve bir labirentte yaşayan yaratıktı.",
+    "Roma mitolojisi, neredeyse tamamen Yunan mitolojisinden isimleri değiştirerek alınmıştır.",
+    "Sirenler, şarkılarıyla denizcileri büyüleyip gemilerini kayalara çarptıran yaratıklardı.",
+    "Tanrıça Artemis, hem avcılığın hem de ayın tanrıçasıydı.",
+    "Cerberus, yer altı dünyasının kapısını bekleyen üç başlı bir köpekti.",
+    "Mitolojide Prometheus, ateşi tanrılardan çalıp insanlara verdiği için cezalandırılmıştır.",
+    "Mısır tanrısı Ra, her gece yer altı dünyasında yılan Apep ile savaşırdı.",
+    "Türk mitolojisinde 'Al Karısı', yeni doğan bebekleri korumak için korkutulan bir figürdür.",
+    "Loki aslında bir devdir ama tanrılarla birlikte yaşamasına izin verilmiştir.",
+    "Atlas, gökyüzünü omuzlarında taşımakla cezalandırılan bir Titandır.",
+    "Eros'un (Cupid) biri altın (aşk), diğeri kurşun (nefret) uçlu iki oku vardı.",
+    "Mitolojide Pandora, insanlığa gönderilen ilk kadındır.",
+    "İskandinav mitolojisinde gökkuşağı (Bifrost), insanlar ve tanrılar arasındaki köprüdür.",
+    "Yunan mitolojisinde hafıza tanrıçası Mnemosyne'dir.",
+    "Herakles (Herkül), günahlarından arınmak için 12 imkansız görevi tamamlamıştır.",
+    "Fenrir, İskandinav mitolojisinde kıyameti (Ragnarok) başlatacak olan dev kurttur.",
+    "Mitolojide Pan, doğanın ve çobanların tanrısıdır ve kaval çalmasıyla bilinir.",
+    "Yedi büyük günah fikri, antik mitolojilerden modern dinlere kadar uzanır.",
+    "Yunan mitolojisinde zafer tanrıçası Nike'dir.",
+    "İskandinav tanrısı Tyr, dev kurt Fenrir'i bağlamak için sağ elini feda etmiştir.",
+    "Sphinx (Sfenks), bilmecesini bilemeyenleri yiyen bir yaratıktı.",
+    "Mitolojide Ikarus, balmumundan kanatlarıyla güneşe çok yakın uçtuğu için ölmüştür.",
+    "Tanrıça Athena, Zeus'un kafasından tam zırhlı bir şekilde doğmuştur.",
+    "Maya mitolojisinde dünya, dev bir timsahın sırtında duran bir yerdir.",
+    "Hephaistos, tanrıların demircisidir ve topal olduğu söylenen tek tanrıdır.",
+    "Mitolojide Midas, dokunduğu her şeyi altına çevirme gücüne sahipti.",
+    "Gılgamış Destanı, ölümsüzlüğü arayan bir kralın hikayesini anlatır.",
+    "Yunan mitolojisinde 'Kaos', her şeyden önce var olan sonsuz boşluktur.",
+    "Ares, savaşın vahşetini temsil ederken; Athena, savaşın stratejisini temsil eder.",
+    "Orpheus, müziğiyle ölüler diyarındaki taşları bile ağlatabilen bir ozandı."
+],
+
+"Bilim": [
+    "Işık, Güneş'ten Dünya'ya yaklaşık 8 dakika 20 saniyede ulaşır.",
+    "İnsan vücudundaki atomların %90'ı yıldız tozudur.",
+    "Elmas, saf karbondur ve doğadaki en sert doğal maddedir.",
+    "Sıcak su, belirli koşullar altında soğuk sudan daha hızlı donabilir (Mpemba Etkisi).",
+    "Dünya'nın çekirdeği, Güneş'in yüzeyi kadar sıcaktır (yaklaşık 5.500 °C).",
+    "Bir gram DNA, 215 petabayt (yaklaşık 215 milyon GB) veri depolayabilir.",
+    "Dünyadaki oksijenin %20'si Amazon yağmur ormanları tarafından üretilir.",
+    "İnsan vücudundaki bakterilerin sayısı, insan hücrelerinin sayısından fazladır.",
+    "Ses, suda havadan 4.5 kat daha hızlı hareket eder.",
+    "Bilinen evrendeki en soğuk yer Boomerang Nebulası'dır (-272 °C).",
+    "Ortalama bir bulut yaklaşık 500.000 kilogram ağırlığındadır.",
+    "Muzlar teknik olarak radyofoniktir; az miktarda potasyum izotopu yayarlar.",
+    "Güneş Sistemi'ndeki en yüksek dağ Mars'taki Olympus Mons'tur (Everest'in 3 katı).",
+    "Venüs, Güneş'e en yakın gezegen olmamasına rağmen sistemdeki en sıcak gezegendir.",
+    "Işık hızı saniyede yaklaşık 300.000 kilometredir.",
+    "Hidrojen, evrendeki en bol bulunan elementtir.",
+    "İnsan beyni, uyandığında küçük bir ampulü yakacak kadar elektrik üretir.",
+    "Dünya'nın çevresini bir ışık hüzmesi bir saniyede 7.5 kez dolaşabilir.",
+    "Satürn ve Jüpiter'de elmas yağmurları yağdığı düşünülmektedir.",
+    "Plüton keşfedildiğinden beri Güneş etrafındaki bir tam turunu henüz tamamlamamıştır.",
+    "İnsan genetiği, muz genetiği ile %50 oranında benzerlik gösterir.",
+    "Dünya aslında tam bir küre değildir; ekvatorda biraz daha şişkindir.",
+    "Bir nötron yıldızından alınan bir çay kaşığı madde, bir milyar ton ağırlığındadır.",
+    "Güneş, sistemdeki toplam kütlenin %99.8'ini oluşturur.",
+    "İnsan kemikleri, aynı ağırlıktaki çelikten daha güçlüdür.",
+    "Ay, her yıl Dünya'dan yaklaşık 3.8 cm uzaklaşmaktadır.",
+    "Venüs'te bir gün, bir yıldan daha uzun sürer.",
+    "Bir karıncanın koku alma duyusu bir köpeğinki kadar gelişmiştir.",
+    "Atomların %99.9'u boşluktan oluşur.",
+    "Işık, yerçekimi tarafından bükülebilir (Einstein'ın görelilik kuramı).",
+    "Dünya üzerindeki toplam kum tanesi sayısından daha fazla yıldız vardır.",
+    "DNA'nızı tamamen açıp uca eklerseniz, Güneş Sistemi'nin ucuna 2 kez gidip gelebilir.",
+    "Okyanuslardaki toplam altın miktarı, her insana 4 kilo düşecek kadar çoktur.",
+    "Mıknatıslar ısıtıldığında manyetik özelliklerini kaybederler.",
+    "Su, aynı anda hem donup hem kaynayabilir (Üçlü Nokta durumu).",
+    "Arılar morötesi ışığı görebilirler.",
+    "Bir şimşek çakması, Güneş yüzeyinden 5 kat daha sıcaktır.",
+    "İnsan gözü 10 milyondan fazla farklı rengi ayırt edebilir.",
+    "Ses boşlukta (vakumda) yayılamaz.",
+    "Altın, o kadar yumuşak ve esnektir ki bir gramından kilometrelerce uzunlukta tel yapılabilir.",
+    "Dünya üzerindeki her insanın atomlarındaki boşluklar çıkarılsa, tüm insanlık bir elmaya sığabilir.",
+    "Hamam böcekleri radyasyona insanlardan 10 kat daha dayanıklıdır.",
+    "Periyodik tabloda bulunmayan tek harf 'J' harfidir.",
+    "İnsan dili bir kas yığınıdır ve vücuttaki en güçlü kastır (ağırlığına oranla).",
+    "Gökkuşağı aslında bir dairedir, biz sadece yarısını görürüz.",
+    "Uzayda astronotlar ağlayamaz çünkü yerçekimi olmadığı için gözyaşları akmaz.",
+    "Bakır ve gümüş, doğal olarak anti-bakteriyel özellik taşır.",
+    "Bebeklerin kemik sayısı yetişkinlerden fazladır (zamanla birleşirler).",
+    "Işık, elmasın içinden geçerken hızı yarı yarıya azalır.",
+    "Oksijenin sıvı hali açık mavi renktedir."
+],
+
+"Müzik": [
+    "İneklerin klasik müzik dinlerken daha fazla süt verdiği bilimsel olarak kanıtlanmıştır.",
+    "Metallica, dünyanın 7 kıtasında da konser veren tek gruptur.",
+    "Piyano ilk icat edildiğinde ismi 'Gravicembalo col piano e forte' idi.",
+    "İnsan kalbi, dinlediği müziğin ritmine ayak uydurabilir.",
+    "Bitkiler, müzik çalınan ortamlarda daha hızlı büyüyebilirler.",
+    "Dünyanın en uzun konseri 639 yıl sürecek şekilde planlanmıştır (Almanya'da devam ediyor).",
+    "Müzik dinlemek, beynin her iki yarım küresini de aynı anda çalıştıran nadir aktivitelerden biridir.",
+    "Piyano tuşları eskiden fildişinden yapılıyordu; günümüzde plastikten yapılmaktadır.",
+    "Dünyanın en pahalı enstrümanı, 15.9 milyon dolara satılan bir Stradivarius kemanıdır.",
+    "Enstrüman çalmak, IQ puanını 7 puana kadar artırabilir.",
+    "Bir şarkının kafanıza takılıp sürekli tekrarlanması durumuna 'Kulak Kurdu' (Earworm) denir.",
+    "Elvis Presley hayatı boyunca hiç şarkı sözü yazmamıştır.",
+    "Kuşlar, insanların duyamadığı frekanslarda karmaşık şarkılar söylerler.",
+    "Eminem, 'Rap God' şarkısında 6 dakikada 1560 kelime söyleyerek dünya rekoru kırmıştır.",
+    "Dünyanın en eski müzik aleti, bir ayı kemiğinden yapılmış 40.000 yıllık bir flüttür.",
+    "Beethoven, sağır olduktan sonra bile en ünlü eserlerini bestelemeye devam etmiştir.",
+    "Termitler, ağır metal müzik dinletildiğinde ahşabı 2 kat daha hızlı yerler.",
+    "Freddie Mercury'nin ses telleri, normal bir insandan çok daha hızlı titreşiyordu.",
+    "Dünyanın en kısa şarkısı Napalm Death grubuna aittir ve sadece 1.3 saniye sürer.",
+    "İnsanlar doğuştan gelen bir ritim duygusuna sahiptir.",
+    "Mutlu müzikler dinlemek yaratıcılığı artırır.",
+    "Sualtında müzik, havadan 4.5 kat daha hızlı yayılır.",
+    "Müzik terapisi, Alzheimer hastalarının anılarını hatırlamasına yardımcı olabilir.",
+    "Beatles grubu 'Yesterday' şarkısını aslında kahvaltıda 'Çırpılmış Yumurta' sözleriyle bestelemişti.",
+    "Keman yayları genellikle at kuyruğu kılından yapılır.",
+    "Dünya genelinde en çok bilinen şarkı 'Happy Birthday'dir.",
+    "Bob Marley'in son sözleri 'Para hayatı satın alamaz' olmuştur.",
+    "Jimi Hendrix nota okumayı bilmiyordu; her şeyi kulağıyla çalıyordu.",
+    "Heavy metal dinleyenlerin diğer türleri dinleyenlere göre daha sakin olduğu gözlemlenmiştir.",
+    "Kanada, yasal olarak radyolarda çalınan şarkıların %35'inin Kanadalı sanatçılara ait olmasını şart koşar.",
+    "Bir orkestra şefi, bir konserde yaklaşık 5 kilometre yürümüş kadar enerji harcar.",
+    "İlk müzik videolarından biri 1894 yılında bir tanıtım için çekilmiştir.",
+    "Piyano 88 tuştan oluşur; 52 beyaz ve 36 siyah tuş.",
+    "Pop müzik şarkıları son 50 yılda kelime hazinesi açısından daha basit hale gelmiştir.",
+    "Müzik dinlemek antrenman performansını %15 oranında artırabilir.",
+    "Mozart, 5 yaşında beste yapmaya, 6 yaşında konser vermeye başlamıştır.",
+    "Gitarın atası olan 'Ud', Orta Doğu kökenli bir çalgıdır.",
+    "Hard rock grubu AC/DC'nin ismi, bir dikiş makinesinin üzerindeki elektrik ibaresinden (Alternating Current/Direct Current) gelir.",
+    "Dünyanın en büyük korosu 121.440 kişiden oluşmuştur.",
+    "İnsanlar genellikle 20'li yaşlarının başında dinledikleri müziklere ömür boyu sadık kalırlar.",
+    "Opera, 16. yüzyılın sonunda İtalya'da doğmuştur.",
+    "Kendi sesinizi kayıttan dinlediğinizde garip gelmesinin sebebi, kemik yoluyla iletilen titreşimlerin eksikliğidir.",
+    "Birçok cerrah, ameliyat sırasında odaklanmak için müzik dinler.",
+    "Fransız milli marşı 'La Marseillaise', sadece bir gecede yazılmıştır.",
+    "İskandinav ülkeleri, nüfus başına düşen metal grubu sayısında dünya lideridir.",
+    "Radyoda çalınan ilk şarkı bir 'Hymn' (ilahı) idi.",
+    "Saksafon, 1840 yılında Adolphe Sax tarafından icat edilmiştir.",
+    "Hip Hop kültürü 1970'lerde New York, Bronx'ta doğmuştur.",
+    "Bir şarkıdaki 'Nakarat' kısmı, beynin en kolay hatırladığı bölümdür.",
+    "Dünya üzerindeki en eski yazılı şarkı notası Sümerlere aittir (M.Ö. 1400)."
+],
+
+
+"Sinema": [
+    "Titanic filmi, 200 milyon dolarlık bütçesiyle, geminin kendisinden (7.5 milyon dolar) daha pahalıya mal olmuştur.",
+    "Avatar filmi için yönetmen James Cameron, tamamen yeni bir dil (Na'vi) icat ettirmiştir.",
+    "Yıldız Savaşları'ndaki (Star Wars) Yoda karakterinin yüzü, Albert Einstein'ın gözleri ve kırışıklıklarından esinlenilmiştir.",
+    "Alfred Hitchcock, hayatı boyunca kendi filmlerinden korktuğu için onları hiç izlememiştir.",
+    "Yüzüklerin Efendisi: Kralın Dönüşü, 11 dalda Oscar adaylığı alıp 11'ini de kazanan tek filmdir.",
+    "The Dark Knight filminde Heath Ledger, Joker makyajını bizzat kendisi yapmıştır.",
+    "Terminatör filminin senaryosu, James Cameron'a rüyasında bir metal iskelet görmesiyle ilham olmuştur.",
+    "Jurassic Park'taki dinozor seslerinin çoğu, kaplumbağaların çiftleşme seslerinden kaydedilmiştir.",
+    "Pulp Fiction filmindeki meşhur çanta açıldığında içinden yayılan ışık, sadece turuncu bir ampulden geliyordu.",
+    "Psycho (Sapık) filmi, Amerikan sinemasında bir tuvaletin sifonunun çekildiğinin gösterildiği ilk filmdir.",
+    "Charlie Chaplin, kendisine benzeyenler yarışmasına gizlice katılmış ve üçüncü olabilmiştir.",
+    "Shrek'in yüz hatları, gerçek hayattaki Fransız güreşçi Maurice Tillet'ten esinlenilmiştir.",
+    "Baba (The Godfather) filminde 'mafya' kelimesi tek bir kez bile geçmez.",
+    "Inception filmindeki rüya katmanları sahneleri için neredeyse hiç bilgisayar efekti (CGI) kullanılmamıştır.",
+    "Schindler'in Listesi filmi, Steven Spielberg'in mezuniyet tezi yerine sayılmış ve yönetmen diplomasını öyle almıştır.",
+    "Dövüş Kulübü (Fight Club) filmindeki her sahnede en az bir adet Starbucks bardağı gizlidir.",
+    "Matrix filmindeki yeşil kodlar aslında bir suşi tarifinin Japonca karakterleridir.",
+    "Aslan Kral (The Lion King) filmindeki kükremeler aslında kaplan kükremesidir; aslan kükremesi çok kısık bulunmuştur.",
+    "Harry Potter serisinde Daniel Radcliffe, çekimler boyunca tam 160 adet gözlük eskitmiştir.",
+    "İlk sinema filmi 1895'te gösterilen 'Trenin Gara Girişi'dir; insanlar trenin üzerlerine geleceğini sanıp kaçmıştır.",
+    "James Bond karakteri, ismini bir kuş bilimci yazarın kitabının kapağından almıştır.",
+    "Paraşütle atlama sahneleri için Görevimiz Tehlike'de Tom Cruise tam 106 kez uçaktan atlamıştır.",
+    "Toy Story (Oyuncak Hikayesi), bilgisayar ortamında hazırlanan ilk uzun metrajlı animasyon filmidir.",
+    "Geleceğe Dönüş filmindeki zaman makinesi ilk başta bir buzdolabı olarak tasarlanmıştı.",
+    "Karayip Korsanları'ndaki Jack Sparrow karakteri için Johnny Depp, modern bir kaya yıldızı olan Keith Richards'ı örnek almıştır.",
+    "Rocky filminin senaryosu Sylvester Stallone tarafından sadece 3 günde yazılmıştır.",
+    "Interstellar filmindeki robot TARS, setlerde gerçekten hareket ettirilen büyük bir maket yardımıyla çekilmiştir.",
+    "Korku Seansı (The Conjuring) filminin setinde birçok oyuncu doğaüstü olaylar yaşadığını iddia etmiştir.",
+    "Avengers: Endgame, dünya çapında en çok hasılat yapan film rekorunu elinde tutmuştur.",
+    "Jackie Chan, filmlerindeki tüm tehlikeli sahnelerde dublör kullanmadan bizzat kendisi oynar.",
+    "Ben-Hur (1959) filmi için 8.000'den fazla figüran ve 78 gerçek at kullanılmıştır.",
+    "Coco animasyonu için ekip 3 yıl boyunca Meksika'da araştırma yapmıştır.",
+    "Gladyatör filminde Russell Crowe'un yüzündeki yaralar, setteki bir kaza sonucu oluşan gerçek yaralardır.",
+    "Kuzuların Sessizliği filminde Anthony Hopkins (Hannibal), toplamda sadece 16 dakika görünmektedir.",
+    "Superman rolü için Christopher Reeve, kas yapabilmek adına Darth Vader'ı oynayan David Prowse ile çalışmıştır.",
+    "Scream (Çığlık) filmindeki maske, Edvard Munch'un 'Çığlık' tablosundan esinlenilmiştir.",
+    "Up (Yukarı Bak) filmindeki evi uçurmak için gerçekte yaklaşık 26 milyon balon gerekiyordu.",
+    "Alien filmindeki yaratığın içinden fırlama sahnesinde oyuncuların şaşkınlığı gerçektir; sahne onlara söylenmemişti.",
+    "Spiderman (2002) filminde Peter Parker'ın tepsiyi havada yakaladığı sahne CGI değil, 156. denemede çekilen gerçektir.",
+    "Hababam Sınıfı filmi çekilirken oyuncuların çoğu gerçekten lise öğrencisiydi.",
+    "Cüneyt Arkın, aksiyon sahneleri için sirklerde özel eğitim almıştır.",
+    "GORA filmindeki uzay sahneleri, dönemine göre Türkiye'deki en yüksek bütçeli prodüksiyondur.",
+    "E.T. filmindeki yaratığın yüzü, Albert Einstein ve Carl Sandburg'un karışımıdır.",
+    "Wall-E filmindeki neredeyse hiç diyalog olmaması, yönetmenin sessiz film dönemine bir saygı duruşudur.",
+    "Esaretin Bedeli, vizyona girdiğinde başarısız olmuş ancak VHS ve TV gösterimleriyle efsaneleşmiştir.",
+    "Leon (Sevginin Gücü) filmindeki Natalie Portman o sırada sadece 12 yaşındaydı.",
+    "The Revenant filminde Leonardo DiCaprio, gerçek bir bizon ciğeri yemiştir.",
+    "Oscar heykelciği, II. Dünya Savaşı sırasında metal kıtlığı nedeniyle alçıdan yapılmıştır.",
+    "Gözleri Tamamen Kapalı filminin çekimleri tam 400 gün sürmüştür (bir rekor).",
+    "Jaws filmindeki mekanik köpekbalığı çekimler sırasında sürekli bozulduğu için, yönetmen köpekbalığını daha az göstermeye karar vermiştir (bu da gerilimi artırmıştır)."
+],
+
+"Vücudumuz": [
+    "İnsan burnu yaklaşık 1 trilyon farklı kokuyu ayırt edebilir.",
+    "Mide asidiniz, bir jilet parçasını eritecek kadar güçlüdür (ancak mide duvarı kendini sürekli yeniler).",
+    "Vücudunuzdaki damarların toplam uzunluğu Dünya'nın çevresini yaklaşık 2.5 kez dolaşabilir.",
+    "Parmak izi gibi, her insanın dil izi de tamamen kendine özeldir.",
+    "Gözlerimiz doğduğumuzdan itibaren hiç büyümez, ancak burnumuz ve kulaklarımız büyümeye devam eder.",
+    "İnsan vücudundaki en güçlü kas, ağırlığına oranla dil değil, çene kasıdır.",
+    "İnsan beyni, uyku sırasında uyanık olduğundan daha fazla elektrik üretir.",
+    "Ortalama bir insan ömrü boyunca yaklaşık 25.000 litre tükürük üretir (iki olimpik havuz dolusu).",
+    "Vücudumuzdaki kemiklerin dörtte biri sadece ayaklarımızda bulunur.",
+    "Sabahları uyandığınızda, akşam yatarken olduğunuzdan yaklaşık 1 cm daha uzunsunuzdur.",
+    "Vücudunuzdaki atomların çoğu 13.7 milyar yaşındadır (yıldız tozuyuz).",
+    "İnsan kalbi bir günde yaklaşık 100.000 kez atar.",
+    "Akciğerleriniz tamamen açılsa bir tenis kortu kadar alan kaplayabilir.",
+    "Bebekler doğduğunda yaklaşık 300 kemiğe sahiptir, yetişkinlerde bu sayı birleşerek 206'ya düşer.",
+    "Hapşırdığınızda hava vücudunuzdan saatte 160 km hızla çıkar.",
+    "Vücudunuzdaki demir miktarı, 7 cm uzunluğunda bir çivi yapmaya yeterlidir.",
+    "Esnemek, beynin soğumasına yardımcı olan fizyolojik bir tepkidir.",
+    "Vücudunuzdaki bakterilerin toplam ağırlığı yaklaşık 2 kilogramdır.",
+    "İnsan gözü, 10 milyon farklı rengi ayırt edebilecek kapasitededir.",
+    "Tırnaklar, baskın kullanılan elde (sağlaklar için sağ el) daha hızlı uzar.",
+    "Kalbiniz, vücudun dışına çıkarılsa bile oksijen aldığı sürece atmaya devam edebilir.",
+    "Dünyadaki her insanın kendine has bir vücut kokusu vardır (tek yumurta ikizleri hariç).",
+    "Koku duyusu anılarla en çok bağlantılı duyudur; kokular eski anıları anında tetikleyebilir.",
+    "Vücudunuz her dakika yaklaşık 30.000 ölü hücre döker.",
+    "Beynimiz vücut ağırlığımızın %2'sini oluşturmasına rağmen, enerjimizin %20'sini harcar.",
+    "İnsanlar karanlıkta biyolüminesans (ışık yayma) özelliğine sahiptir, ancak bu ışık gözle görülemeyecek kadar zayıftır.",
+    "Gülmek için 17 kas kullanılırken, kaş çatmak için 43 kas kullanılır.",
+    "Deri, vücudumuzun en büyük organıdır.",
+    "Vücudumuzdaki en küçük kemik kulağımızda bulunan 'üzengi' kemiğidir.",
+    "Beynimizin veri depolama kapasitesinin yaklaşık 2.5 petabayt (2.5 milyon GB) olduğu tahmin ediliyor.",
+    "İnsan kalbi ömür boyunca yaklaşık 3 milyar kez atar.",
+    "Karaciğer, vücudumuzda kendini tamamen yenileyebilen tek organdır.",
+    "Parmaklarınız o kadar hassastır ki, bir evi parmağınızın ucuna kadar küçültebilseydiniz evle araba arasındaki farkı hissedebilirdiniz.",
+    "Vücudumuzdaki magnezyum bir ampulü yakmaya, karbon ise 9.000 kurşun kalem yapmaya yeter.",
+    "Mavi gözlü insanların alkol toleransının diğerlerinden daha yüksek olduğu düşünülmektedir.",
+    "İnsan bağırsağı yaklaşık 7-8 metre uzunluğundadır.",
+    "Kulak kiri aslında kulak kanallarını enfeksiyonlardan koruyan bir çeşit savunma mekanizmasıdır.",
+    "Ayak parmak izleri de tıpkı parmak izleri gibi eşsizdir.",
+    "Göz kırpma hızımız günde toplamda yaklaşık 30 dakikaya denk gelir.",
+    "Ağzınızda yaşayan bakteri sayısı, dünya nüfusundan daha fazladır.",
+    "Duygusal nedenlerle ağlayan tek canlı insandır.",
+    "Kalp atış hızınız, dinlediğiniz müziğin temposuna göre hızlanabilir veya yavaşlayabilir.",
+    "Diş minesi, vücudunuzdaki en sert maddedir.",
+    "İnsan burnu 50.000 farklı kokuyu hafızasında tutabilir.",
+    "Böbrekleriniz kanınızı günde yaklaşık 300 kez filtreler.",
+    "Bir adım atmak için vücudunuzdaki 200 farklı kas aynı anda çalışır.",
+    "Kan grupları arasında 'Altın Kan' denilen ve dünyada sadece 50 kişide bulunan Rh-null grubu vardır.",
+    "Bebekler yaklaşık bir aylık olana kadar gözyaşı dökerek ağlayamazlar (kanallar henüz açılmamıştır).",
+    "Uyku pozisyonunuz, rüyalarınızın içeriğini etkileyebilir.",
+    "Vücudumuzdaki DNA'lar uç uca eklense Güneş Sistemi'nin sonuna kadar 2 kez gidip gelebilir."
+],
+
+"Moda": [
+    "Topuklu ayakkabılar ilk olarak 10. yüzyılda Pers süvarilerinin üzengiye daha iyi tutunması için erkekler tarafından giyilmiştir.",
+    "Kot pantolonlardaki küçük metal perçinler, ceplerin ağır işlerde yırtılmasını önlemek için oradadır.",
+    "Dünyanın en eski ayakkabısı 5.500 yaşındadır ve Ermenistan'da bulunmuştur.",
+    "Erkek ceketlerinin kollarındaki düğmeler, Napolyon Bonapart'ın askerlerinin ceket kollarıyla burunlarını silmelerini önlemek için eklenmiştir.",
+    "1500'lü yıllarda Avrupa'da 'kabarık kollar' zenginlik göstergesiydi; ne kadar büyükse o kadar zenginsiniz demekti.",
+    "Beyaz gelinlik modası, 1840 yılında Kraliçe Victoria'nın düğününde beyaz giymesiyle başlamıştır.",
+    "II. Dünya Savaşı sırasında ipek kıtlığı nedeniyle kadınlar bacaklarını boyayıp arkasına kalemle 'çorap çizgisi' çizerlerdi.",
+    "Kravat takmak, beyne giden kan akışını yaklaşık %7 oranında azaltabilir.",
+    "Dünyanın en pahalı ayakkabısı 17 milyon dolardır ve gerçek altın ve elmaslarla süslüdür.",
+    "Antik Roma'da mor renkli kıyafetler giymek sadece imparatorluk ailesine mahsustu, başkası giyerse idam edilirdi.",
+    "Louis Vuitton, satılmayan çantalarını markanın değerini korumak için yakarak imha eder.",
+    "Moda haftaları ilk olarak 1943 yılında New York'ta, Fransız modasından dikkatleri çekmek için başlatıldı.",
+    "Tişört (T-shirt), ilk olarak bekar erkeklerin düğme dikmekle uğraşmaması için bir iç çamaşırı olarak icat edildi.",
+    "Mini etek, 1960'larda Mary Quant tarafından Londra'da popüler hale getirildi.",
+    "Astronot kıyafetlerinin her biri yaklaşık 12 milyon dolar maliyete sahiptir.",
+    "Bikini, ismini nükleer testlerin yapıldığı 'Bikini Atolü' adasından almıştır (etkisinin patlayıcı olacağı düşünülmüştü).",
+    "Makyaj malzemelerinin çoğu, parlaması için balık pulu içerir.",
+    "Dünyanın en eski mücevheri 100.000 yıllık boncuklardan oluşan bir kolyedir.",
+    "Timsah derisi bir çanta yapmak için ortalama 3-4 timsah kullanılır.",
+    "Kot pantolonun (Jeans) ismi, kumaşın geldiği yer olan Cenova (Genoa) şehrinden türemiştir.",
+    "Kısa saçlı kadın modası, I. Dünya Savaşı'nda kadınların fabrikalarda çalışırken saçlarının makinelere takılmaması için başladı.",
+    "Dünyanın en küçük çantası bir tuz tanesinden daha küçüktür ve mikroskopla görülebilir.",
+    "Moda endüstrisi, dünyadaki en çok su tüketen ikinci sektördür.",
+    "Marilyn Monroe'nun meşhur uçuşan elbisesi açık artırmada 4.6 milyon dolara satılmıştır.",
+    "Güneş gözlükleri ilk olarak 12. yüzyılda Çin'de hakimlerin göz ifadelerini gizlemek için kullanılıyordu.",
+    "Düğmelerin erkek kıyafetlerinde sağda, kadın kıyafetlerinde solda olmasının sebebi, eski kadınların hizmetçileri tarafından giydirilmesidir.",
+    "Barbie bebeğin üzerinde ilk kıyafet siyah-beyaz çizgili bir mayoydu.",
+    "İlk moda dergisi 1672 yılında Fransa'da yayımlanmıştır.",
+    "Yüksek moda anlamına gelen 'Haute Couture', Fransa'da kanunlarla korunan bir terimdir.",
+    "Kadınların çanta taşıma alışkanlığı, ceplerin kadın kıyafetlerinden çıkarılmasıyla bir ihtiyaç olarak doğmuştur.",
+    "Levi Strauss aslında kot pantolonu değil, perçinli pantolon tasarımını bulmuştur.",
+    "Dünyanın en eski elbisesi olan Tarkhan Elbisesi 5.000 yıllıktır.",
+    "Platform ayakkabılar Antik Yunan tiyatrosunda oyuncuların boyunu uzun göstermek için kullanılırdı.",
+    "Dantel yapmak o kadar zordu ki, bir dönem sadece kraliyet aileleri giyebiliyordu.",
+    "Spor ayakkabı (Sneaker) ismi, tabanının sessiz olması ve 'gizlice yaklaşmaya' (sneak) izin vermesi nedeniyle verilmiştir.",
+    "Fransız moda evi Hermès, başlangıçta at eyerleri ve koşum takımları üretiyordu.",
+    "Siyah renk, Victoria dönemine kadar sadece yas tutarken giyilirdi; Coco Chanel bunu moda yaptı.",
+    "Yün, ateşe en dayanıklı doğal liflerden biridir.",
+    "Bir ipek böceği kozasından yaklaşık 900 metre kesintisiz ipek ipi çıkabilir.",
+    "Ters takılan şapkalar, 90'lı yıllarda hip-hop kültürüyle küresel bir akım haline geldi.",
+    "İngiltere'de bir dönem kıyafetlerin üzerine lüks vergisi olarak 'Şapka Vergisi' konulmuştu.",
+    "Parmak arası terliklerin kökeni M.Ö. 4000 yılındaki Antik Mısır'a kadar uzanır.",
+    "Gucci markasının logosundaki iki G, kurucusu Guccio Gucci'nin baş harfleridir.",
+    "Naylon çoraplar 1940'ta ilk çıktığında kadınlar onları alabilmek için dükkanların önünde kuyruklar oluşturmuştu.",
+    "Puanlı (Polka Dot) desenler 1920'lerde Minnie Mouse ile meşhur oldu.",
+    "Fermuarın icat edilmesi, düğmeli botların giyilme süresini dakikalardan saniyelere indirdi.",
+    "Pantolon giyen ilk kadınlar, genellikle binicilik veya maden işçiliği yapanlardı.",
+    "Kadife kumaş, tarihte her zaman soyluluğun ve gücün sembolü olmuştur.",
+    "Dünyada her yıl yaklaşık 80 milyar yeni kıyafet üretilmektedir.",
+    "Kendi kıyafetini tasarlayıp diken ilk kişi Charles Frederick Worth, modanın babası kabul edilir."
+],
+
+
+"Denizler": [
+    "Okyanusların sadece %5'i keşfedilebilmiştir; Ay'ın yüzeyini okyanus tabanından daha iyi tanıyoruz.",
+    "Dünyadaki oksijenin %50 ila %80'i okyanuslardaki planktonlar ve deniz bitkileri tarafından üretilir.",
+    "Mariana Çukuru'nun dibindeki basınç, üzerinizde 50 adet Boeing 747 uçağı varmış gibi bir his yaratır.",
+    "Deniz yıldızlarının beyni ve kanı yoktur; vücutlarına su pompalayarak hareket ederler.",
+    "Okyanuslarda, karadaki tüm müzelerden daha fazla tarihi batık ve eser bulunmaktadır.",
+    "Dünyanın en uzun sıradağı okyanusun altındadır (Orta Atlas Sırtı - 65.000 km).",
+    "Mavi balinaların kalbi bir araba büyüklüğündedir ve atışı 3 kilometre öteden duyulabilir.",
+    "Deniz suları o kadar çok altın içerir ki, hepsi çıkarılsa her insana 4 kilo altın düşer.",
+    "Pasifik Okyanusu, dünyadaki tüm karaların toplamından daha geniştir.",
+    "Okyanusun en derin noktasında bile (11 km aşağıda) plastik atıklara rastlanmıştır.",
+    "Deniz analarının %95'i sudur ve 650 milyon yıldır dünyadadırlar.",
+    "Bir ahtapotun üç kalbi, dokuz beyni ve mavi kanı vardır.",
+    "Köpekbalıkları yılda ortalama 10 kişiyi öldürürken, insanlar yılda 100 milyon köpekbalığını öldürür.",
+    "Okyanuslardaki buzullar erirse, deniz seviyesi yaklaşık 60 metre yükselir.",
+    "Deniz atları, erkeklerin hamile kalıp doğum yaptığı tek canlı türüdür.",
+    "Istakozlar biyolojik olarak ölümsüz olabilirler; yaşlanarak değil, sadece hastalık veya avlanma sonucu ölürler.",
+    "Deniz suyundaki tuz miktarı, tüm karaları 150 metre kalınlığında bir tabaka ile kaplamaya yeter.",
+    "Büyük Set Resifi, uzaydan görülebilen dünyadaki en büyük canlı yapıdır.",
+    "Kutup bölgelerindeki bazı balıkların kanında donmalarını engelleyen doğal bir antifriz proteini bulunur.",
+    "Balinalar uyurken beyinlerinin sadece yarısını kapatırlar, diğer yarı nefes almalarını kontrol eder.",
+    "Okyanus tabanında 'hidrotermal bacalar' denilen ve 400 derece sıcaklıkta su fışkırtan yerler vardır.",
+    "Deniz yılanlarının zehri, karadaki çoğu yılandan çok daha güçlüdür.",
+    "İnci, canlı bir organizma (istiridye) tarafından üretilen tek mücevherdir.",
+    "Karideslerin kalbi kafalarının içindedir.",
+    "Yunuslar uyurken tek gözlerini açık tutarlar.",
+    "Deniz kaplumbağaları, yumurtadan çıktıktan yıllar sonra doğdukları kumsalı bulup oraya yumurtlarlar.",
+    "Kalamarların gözleri bir yemek tabağı büyüklüğünde olabilir.",
+    "Dünyanın en büyük şelalesi okyanusun altındadır (Danimarka Boğazı kataraktı).",
+    "Sualtı nehirleri vardır; yoğunluk farkı nedeniyle okyanusun içinde akmaya devam ederler.",
+    "Yelken balığı saatte 110 km hızla yüzerek dünyanın en hızlı balığı ünvanını taşır.",
+    "Mercanlar aslında birer taş değil, canlı hayvan kolonileridir.",
+    "Fosforlu deniz canlıları, kendi ışıklarını (biyolüminesans) üretmek için kimyasal tepkimeler kullanır.",
+    "Okyanusların ortalama derinliği yaklaşık 3.700 metredir.",
+    "Hortumlu dünyadaki en büyük canlı olan Mavi Balina, günde 4 ton karides benzeri kril yer.",
+    "Denizlerin dibinde bulunan manganez yumruları, piller için değerli madenler içerir.",
+    "Birçok deniz kuşu, deniz suyunu içip tuzu gözlerinin yanındaki bezlerden dışarı atabilir.",
+    "Balon balığı, bir insanı saniyeler içinde öldürebilecek kadar güçlü bir zehir (tetrodotoksin) içerir.",
+    "Aynalı sazanlar ve bazı balıklar, suyun dışındaki insanların yüzlerini tanıyabilir.",
+    "Deniz dibindeki yanardağ patlamaları, karadakilerden çok daha fazladır.",
+    "Ölü Deniz (Lut Gölü) o kadar tuzludur ki balıklar orada yaşayamaz.",
+    "Vatozların elektrik çarpan türleri 650 volta kadar akım üretebilir.",
+    "Deniz biyologları her yıl okyanuslarda yaklaşık 2.000 yeni tür keşfediyor.",
+    "Kutup ayıları deniz memelisi sayılırlar çünkü hayatlarının çoğunu denizde geçirirler.",
+    "Okyanus akıntıları, dünyadaki iklimi düzenleyen dev bir taşıma bandı gibidir.",
+    "Bazı yengeç türleri suyun dışında günlerce yaşayabilir.",
+    "Tsunami dalgaları açık denizde saatte 800 km hıza (uçak hızı) ulaşabilir.",
+    "Dünyadaki en büyük kanyon okyanusun altındadır (Zhemchug Kanyonu).",
+    "Deniz hıyarları tehlike anında iç organlarını dışarı fırlatıp kaçabilir ve organlarını yeniden büyütebilir.",
+    "Yunan deniz tanrısı Poseidon'un mızrağı depremleri yaratma gücüne sahipti.",
+    "Okyanusların toplam hacmi 1.3 milyar kilometreküptür."
+],
+
+"Hukuk": [
+    "Dünyanın bilinen en eski yazılı kanunları M.Ö. 1750 yılındaki Hammurabi Kanunları'dır (Kısasa kısas).",
+    "İsviçre'de tek bir kobay faresine (Guineapig) sahip olmak suçtur; sosyal hayvanlar oldukları için en az iki tane olmalıdır.",
+    "Vatikan, metrekare başına düşen suç oranıyla dünyanın en yüksek suç oranına sahip yeridir (turist yoğunluğu nedeniyle).",
+    "Eski Roma'da babasını öldüren kişi, bir çuvala yılan, horoz ve köpek ile birlikte konulup denize atılırdı.",
+    "Fransa'da bir ölüyle evlenmek yasal olarak mümkündür (Cumhurbaşkanı izniyle).",
+    "Kanada'da her 5 radyodan birinin Kanadalı bir sanatçı çalması yasal zorunluluktur.",
+    "Samoa'da eşinin doğum gününü unutmak suç kabul edilir.",
+    "Tayland'da kağıt paranın üzerine basmak suçtur çünkü üzerinde kralın resmi vardır.",
+    "Venedik'te güvercinleri beslemek yasaktır ve ağır para cezası vardır.",
+    "Dünyanın en kısa anayasası ABD Anayasası'dır (toplam 7 madde).",
+    "Antik Yunan'da bir avukat tutmak yasaktı; herkes mahkemede kendi davasını savunmak zorundaydı.",
+    "Roma hukukunda kadınlar teknik olarak babalarının veya kocalarının mülkü sayılırdı.",
+    "Avustralya'da pazar günleri pembe pantolon giymek teknik olarak hala yasaktır.",
+    "İskoçya'da kapınızı çalıp tuvaleti kullanmak isteyen bir yabancıyı içeri almak yasal bir zorunluluktur.",
+    "Singapur'da sakız çiğnemek ve ithal etmek yasaktır (temizlik amacıyla).",
+    "Magna Carta (1215), kralın yetkilerini sınırlayan ilk belgedir ve modern hukukun temeli sayılır.",
+    "ABD'de 'Miranda Hakları', polisin gözaltına alırken haklarınızı okuma zorunluluğudur.",
+    "Hukukta 'Habeas Corpus', bir kişinin mahkemeye çıkarılmadan haksız yere tutuklanamayacağı ilkesidir.",
+    "Norveç'te hapishaneler, suçluyu topluma kazandırmak için 'insancıl' bir tasarıma sahiptir (TV, banyo vb. içerir).",
+    "Lüksemburg'da toplu taşıma tamamen ücretsizdir ve bu bir vatandaşlık hakkıdır.",
+    "Eski Mısır'da bir kediyi öldürmenin cezası, kaza olsa bile idamdı.",
+    "Hukuk sembolü olan Adalet Heykeli'nin gözlerinin bağlı olması 'tarafsızlığı' temsil eder.",
+    "Dünyada en çok mahkum sayısına sahip ülke Amerika Birleşik Devletleri'dir.",
+    "İngiliz hukukunda 'Kral hata yapamaz' (The King can do no wrong) ilkesi vardır.",
+    "İsviçre'de pazar günleri çim biçmek veya gürültülü işler yapmak yasaktır.",
+    "Birleşik Krallık'ta parlamentoda zırh giymek 1313 yılından beri yasaktır.",
+    "Eski Çin'de yalan söyleyenlerin dilleri dağlanırdı.",
+    "İtalya'da 'yalnızlık hissini önlemek' için evde en az bir evcil hayvan beslenmesi teşvik edilir.",
+    "Yunanistan'da antik mekanları gezerken yüksek topuklu ayakkabı giymek tarihi eserlere zarar verdiği için yasaktır.",
+    "Hukukta 'İsnat Kabiliyeti', kişinin işlediği suçun bilincinde olup olmama durumudur.",
+    "Orta Çağ'da hayvanlar (domuzlar, fareler vb.) mahkemede yargılanabilir ve hapse atılabilirdi.",
+    "Dünyanın en uzun davası Hindistan'da görülmüştür ve yaklaşık 76 yıl sürmüştür.",
+    "Meksika'da hapishaneden kaçmak suç değildir, çünkü 'özgürlük arzusu' doğal bir dürtü kabul edilir.",
+    "Osmanlı'da hukuk, Şer'i hukuk ve Örfi hukuk olarak iki koldan yürütülürdü.",
+    "Napolyon Kanunları, modern Avrupa medeni hukukunun en büyük ilham kaynağıdır.",
+    "İzlanda'da polisler silah taşımazlar çünkü suç oranı çok düşüktür.",
+    "Dubai'de başkasına ait bir arabayı izinsiz yıkamak yasaktır.",
+    "ABD eyaleti Ohio'da bir pazar günü balina avlamak yasaktır (eyalette okyanus olmamasına rağmen).",
+    "Roma hukukunda bir borçlu borcunu ödeyemezse, alacaklıları onu parçalara ayırıp paylaşabilirdi.",
+    "Hukukta 'Mücbir Sebep', elde olmayan (deprem, savaş vb.) nedenlerle sözleşmenin bozulmasıdır.",
+    "Japonya'da aşırı kilolu olmak (Metabo Yasası) şirketler için bir ceza sebebi olabilir.",
+    "İlk telif hakkı yasası (Statute of Anne) 1710 yılında İngiltere'de kabul edilmiştir.",
+    "Portekiz'de denize tuvaletini yapmak yasaktır.",
+    "Güney Kore'de siber zorbalık ağır hapis cezalarıyla sonuçlanabilir.",
+    "Hukukta 'Masumiyet Karinesi', suçu ispatlanana kadar herkesin masum olmasıdır.",
+    "Afrika ülkesi Eritre'de tek eşlilik zorunludur.",
+    "ABD'de mahkemelerde ressamların çizim yapmasının sebebi, kameraların mahremiyeti bozmasının engellenmesidir.",
+    "Uluslararası hukukta deniz sınırları genellikle kıyıdan 12 mil olarak kabul edilir.",
+    "İsviçre Anayasası'nda bitkilerin de bir haysiyeti olduğu kabul edilmiştir.",
+    "Hukuk fakültelerinin armalarında bulunan terazi, hak ve adaletin dengesini simgeler."
+],
+
+"Bitkiler": [
+    "Çilek bir orman meyvesi değildir, ancak karpuz, muz ve patlıcan botanik olarak birer orman meyvesidir.",
+    "Bazı bambu türleri günde yaklaşık 90 santimetre büyüyebilir (neredeyse gözle görülebilir bir hız).",
+    "Dünyanın en yaşlı ağacı olan 'Methuselah', 4.800 yaşından büyüktür.",
+    "Kızılçam ağaçları, tohumlarını yaymak için yangına ihtiyaç duyar; kozalakları yüksek ısıda açılır.",
+    "Güneş çiçekleri (ayçiçekleri) topraktaki radyasyonu ve toksik atıkları temizleme yeteneğine sahiptir.",
+    "Bitkiler de tıpkı insanlar gibi müzik çalınan ortamlarda daha hızlı ve sağlıklı gelişirler.",
+    "Dünyadaki oksijenin %20'si sadece Amazon yağmur ormanları tarafından üretilir.",
+    "Bazı ağaçlar, böcek saldırısına uğradıklarında diğer ağaçları uyarmak için havaya kimyasal sinyaller yayar.",
+    "Meşe ağaçları 50 yaşından önce meşe palamudu üretmeye başlamazlar.",
+    "Dünyanın en büyük çiçeği olan Rafflesia Arnoldii, yaklaşık 1 metre çapındadır ve çürük et gibi kokar.",
+    "Muz ağacı aslında bir ağaç değil, dünyanın en büyük otsu bitkisidir.",
+    "Elma gülgiller (Rosaceae) ailesindendir; armut, kiraz ve güllerle akrabadır.",
+    "Bitkilerin %85'i okyanusların altında yaşamaktadır.",
+    "Kaju fıstığı aslında bir meyvenin dışına asılı duran bir çekirdektir ve kabuğu yakıcı yağ içerir.",
+    "Venüs Sinek Kapanı, avını yakaladıktan sonra sindirmek için yaklaşık 10 gün harcar.",
+    "Bir ağaç, ömrü boyunca atmosferden yaklaşık 1 ton karbondioksit emebilir.",
+    "Kahve çekirdekleri aslında bir meyvenin çekirdekleridir (kahve kirazı).",
+    "Patates, uzayda yetiştirilen ilk sebzedir (1995 yılında mekik görevinde).",
+    "Havuçlar 17. yüzyıldan önce aslında mor renkteydi.",
+    "Mantar aslında bir bitki değil, başlı başına bir 'Fungi' alemidir.",
+    "Çay bitkisinin tüm çeşitleri (yeşil, siyah, beyaz) aslında aynı bitkiden (Camellia sinensis) gelir.",
+    "Mısır bitkisi, Antarktika hariç dünyanın her kıtasında yetiştirilmektedir.",
+    "Okaliptüs ağaçları, kendilerine alan açmak için çevrelerindeki diğer bitkileri öldüren yağlar salgılayabilir.",
+    "Karakavak ağaçları yer altındaki kök ağları sayesinde tek bir organizma gibi hareket ederler.",
+    "Dünyanın en küçük çiçekli bitkisi su mercimeğidir (Wolffia), bir toplu iğne başı kadardır.",
+    "Zencefil ve zerdeçal, aslında bitkilerin toprak altındaki gövdeleridir (rizom).",
+    "Domates 1800'lerin başına kadar 'zehirli elma' olarak biliniyordu.",
+    "Ginkgo Biloba ağacı, 'yaşayan fosil' olarak bilinir; 270 milyon yıldır neredeyse hiç değişmemiştir.",
+    "Tütündeki nikotin, aslında bitkinin böceklere karşı ürettiği doğal bir savunma zehridir.",
+    "Ağaçlar birbirlerine kökleri ve mantar ağları üzerinden şeker ve su transfer ederek 'yardımlaşırlar'.",
+    "Dünyanın en büyük ağacı General Sherman, hacim olarak bir yolcu uçağından daha büyüktür.",
+    "Brokoli, karnabahar ve lahana aslında aynı yabani hardal bitkisinden evrilmiştir.",
+    "Güllerin 35.000'den fazla farklı türü bulunmaktadır.",
+    "Karanfil aslında kurutulmuş bir çiçek tomurcuğudur.",
+    "Bazı kaktüs türleri 200 yıl kadar yaşayabilir.",
+    "Vanilya, bir orkide türünün meyvesidir.",
+    "Orkideler, tozlaşma için böcekleri taklit eden şekillere bürünebilirler.",
+    "Palmiye ağaçları botanik olarak ağaç değil, devasa çimlere daha yakındır.",
+    "Pirinç yetiştirmek için gereken su miktarı, diğer tahıllara göre çok daha fazladır.",
+    "Ananas ağaçta değil, yerdeki bir bitkinin ortasında yetişir.",
+    "Laleler bir dönem Hollanda'da ev fiyatlarından daha pahalıya satılıyordu.",
+    "Nane bitkisi, yayıldığı alanı tamamen kaplayana kadar durmayan istilacı bir bitkidir.",
+    "Bitkiler yerçekimini hissedebilir ve köklerini her zaman aşağıya doğru büyütürler.",
+    "Kestane ağacı meyve vermesi için en az 20 yıl geçmesi gerekir.",
+    "Yosunların kökleri yoktur; besinlerini doğrudan nemli havadan veya yüzeyden emerler.",
+    "Tarçın, tarçın ağacının iç kabuğunun soyulup kurutulmasıyla elde edilir.",
+    "Keten, insanlık tarihinin giysi yapmak için kullandığı en eski bitkisel liftir.",
+    "Ağlayan ağaç (Pterocarpus angolensis) kesildiğinde kırmızı bir sıvı salgıladığı için bu adı almıştır.",
+    "Zakkum bitkisi, çok güzel çiçeklerine rağmen tamamen zehirlidir.",
+    "Bazı çöl bitkileri, yağmur yağana kadar tohumlarını 10 yıl boyunca uykuda tutabilir."
+],
+
+"Matematik": [
+    "0 (Sıfır), hem bir sayı hem de bir rakamdır, ancak Roma rakamlarında karşılığı yoktur.",
+    "Bir kağıdı 42 kez katlayabilseydiniz, kalınlığı Dünya'dan Ay'a kadar ulaşırdı.",
+    "Pi sayısı (π) sonsuza gider ve içinde doğum tarihinizden telefon numaranıza kadar her şey gizlidir.",
+    "1'den 100'e kadar olan sayıları sırasıyla toplarsanız sonuç 5050 olur.",
+    "Asal sayılar, modern internet güvenliğinin ve şifreleme yöntemlerinin temelini oluşturur.",
+    "Kar tanelerinin çoğu altıgen (heksagonal) bir yapıya sahiptir.",
+    "Google ismi, 1 ve yanındaki 100 sıfırı temsil eden 'Googol' kelimesinden türetilmiştir.",
+    "Arılar, altıgen petekler yaparak en az malzeme ile en fazla alanı kullanırlar (Matematiksel mükemmellik).",
+    "Bir destedeki kağıtları her karıştırdığınızda, muhtemelen tarihte daha önce hiç oluşmamış bir dizilim yaratırsınız.",
+    "Fibonacci dizisi (1, 1, 2, 3, 5, 8...) doğadaki çiçeklerin yaprak sayısından deniz kabuklarına kadar her yerde görülür.",
+    "Tayland'da 5 rakamı 'ha' diye telaffuz edilir, bu yüzden internette '555' yazmak 'hahaha' anlamına gelir.",
+    "Abaküs, bilinen en eski hesap makinesidir ve 2000 yıldır kullanılmaktadır.",
+    "İngilizcede 0'dan 1000'e kadar olan sayılar yazıldığında 'a' harfi sadece 'One Thousand'da (Bin) geçer.",
+    "Bir pizzanın yarıçapı 'z' ve yüksekliği 'a' ise, hacmi tam olarak 'Pi*z*z*a' olur.",
+    "Daire, tüm geometrik şekiller içinde en geniş alana sahip olan en kısa çevreye sahip şekildir.",
+    "Rastgele 23 kişinin bulunduğu bir odada, iki kişinin doğum gününün aynı olma olasılığı %50'dir.",
+    "Sıfırın bölme işleminde kullanılması tanımsızdır ve matematiği 'bozar'.",
+    "Altın Oran (1.618), sanatta ve mimaride estetik mükemmelliği temsil eden bir sayıdır.",
+    "Matematiksel olarak bir düğümü çözmekten çok, bir düğüm atmak daha karmaşıktır.",
+    "Romen rakamlarıyla toplama yapmak kolaydır ancak çarpma yapmak neredeyse imkansızdır.",
+    "Isaac Newton, kalkülüsü (türev-integral) vebasalgını sırasında evde sıkıldığı için icat etmiştir.",
+    "Asansörlerde 13. katın olmaması, 'Triskaidekaphobia' denilen 13 sayısı korkusundan kaynaklanır.",
+    "Bir küpün 11 farklı şekilde açılımı (net) yapılabilir.",
+    "Antik Mısırlılar çarpmayı biliyorlardı ancak bunu sadece toplama ve ikiye katlama yöntemiyle yapıyorlardı.",
+    "Asal sayılar arasında sadece 2 ve 3 ardışıktır; diğer tüm asal sayılar tek sayıdır.",
+    "Sonsuzluk bir sayı değildir, bir kavramdır.",
+    "Dünyadaki en popüler sayı araştırmalara göre 7'dir.",
+    "Bir madeni parayı 10 kez atıp hepsinde yazı gelme olasılığı 1024'te 1'dir.",
+    "Matematiksel olarak 'Mükemmel Sayı', kendisi hariç bölenlerinin toplamına eşit olan sayıdır (Örn: 6 = 1+2+3).",
+    "Eksi ile eksinin çarpımının artı olmasını ilk kez Hintli matematikçi Brahmagupta formüle etmiştir.",
+    "Satranç tahtasına her kareye bir öncekinin iki katı buğday koyarsanız, dünyadaki tüm buğdaydan fazlasına ihtiyacınız olur.",
+    "Matematikte 'i' sayısı, karesi -1 olan imajiner (sanal) bir sayıdır.",
+    "Herhangi bir haritayı renklendirmek için, birbirine değen bölgelerin farklı olması şartıyla sadece 4 renk yeterlidir.",
+    "Doğrusal olmayan sistemlerin başlangıçtaki küçük değişimlerle büyük sonuçlar doğurmasına 'Kelebek Etkisi' denir.",
+    "Bilgisayarlar her şeyi sadece 0 ve 1'lerden oluşan ikili (binary) sistemle anlar.",
+    "Sayıları simgeleyen rakamlar, içerdikleri açı sayısına göre tasarlanmıştı (Eski teori).",
+    "Dünyanın en büyük asal sayısı milyonlarca basamaktan oluşur.",
+    "40 sayısı İngilizcede harfleri alfabetik sırada olan tek sayıdır (Forty).",
+    "Öklid, 'Geometrinin Babası' olarak bilinir.",
+    "Cebir (Algebra) kelimesi, El-Harezmi'nin 'Al-Jabr' kitabından gelmektedir.",
+    "Matematikte bir problemin çözümünün olması kadar, çözümünün olmadığını kanıtlamak da önemlidir.",
+    "Sıfır sayısı Avrupa'ya Haçlı Seferleri ve ticaret yoluyla İslam dünyasından geçmiştir.",
+    "Bir saatin kadranındaki tüm sayıları toplarsanız 78 eder.",
+    "Bilardo toplarının hareketi tamamen fizik ve geometri kanunlarına göre hesaplanabilir.",
+    "İnsan beyni, logaritmik olarak küçük sayıları büyük sayılardan daha kolay ayırt eder.",
+    "Fraktallar, sonsuz karmaşıklıkta ve her ölçekte birbirine benzeyen matematiksel şekillerdir.",
+    "En küçük asal sayı 2'dir.",
+    "Bir kürenin yüzey alanı, aynı yarıçaplı dört dairenin alanına eşittir.",
+    "Asal sayıların dağılımı matematikteki en büyük gizemlerden biri olan 'Riemann Hipotezi' ile ilgilidir.",
+    "Matematik evrenin dilidir."
+],
+
+"Ekonomi": [
+    "Dünyadaki paranın sadece %8'i nakit (kağıt ve madeni) olarak mevcuttur; geri kalanı banka sunucularındaki dijital veridir.",
+    "Bitcoin'in yaratıcısı Satoshi Nakamoto'nun gerçek kimliği hala bir sırdır.",
+    "İlk kağıt para 7. yüzyılda Çin'de kullanılmaya başlanmıştır; Avrupa'ya geçmesi 1000 yıl sürmüştür.",
+    "Dünyadaki tüm altınlar eritilip birleştirilse, sadece 3 adet olimpik yüzme havuzunu doldurabilir.",
+    "Monopoly oyunu aslında kapitalizmin tehlikelerini ve tekelleşmenin zararını göstermek için icat edilmişti.",
+    "Apple, Microsoft ve Amazon gibi şirketlerin piyasa değerleri, birçok ülkenin yıllık milli gelirinden fazladır.",
+    "Enflasyonun en yüksek olduğu ülke tarihinde Macaristan'da, fiyatlar her 15 saatte bir ikiye katlanıyordu.",
+    "Dünyanın en değerli markası her yıl teknoloji devleri arasında değişmektedir.",
+    "İsviçre frangı, dünyadaki en güvenli 'liman' para birimlerinden biri olarak kabul edilir.",
+    "McDonald's, dünyanın en büyük gayrimenkul sahiplerinden biridir; asıl geliri hamburgerden değil kira ve mülkten gelir.",
+    "Dünyada tedavüldeki en pahalı banknot 10.000 Singapur dolarıdır (yaklaşık 7.500 USD).",
+    "Tarihteki ilk borsa 1602 yılında Hollanda Doğu Hindistan Şirketi tarafından kurulmuştur.",
+    "Elon Musk, bir dönem dünyanın en zengin insanı ünvanını alarak servetini saniyeler içinde binlerce dolar artırmıştır.",
+    "Meksika'da hapishaneden kaçmak suç değildir çünkü 'özgürlük arzusu' temel bir hak sayılır (Ekonomik etkisi yüksektir).",
+    "Asgari ücret kavramı ilk kez 1894 yılında Yeni Zelanda'da uygulanmaya başlanmıştır.",
+    "Dünyada kişi başına düşen borç miktarı, kişi başına düşen nakit paradan çok daha fazladır.",
+    "Brezilya'da kahve üretimi, dünya kahve fiyatlarını tek başına belirleyecek kadar büyüktür.",
+    "Piyasa ekonomisinde 'Görünmez El' teorisi Adam Smith tarafından ortaya atılmıştır.",
+    "Doların üzerindeki 'S' harfi ( $ ), aslında İspanyol Pesosu'nun (Ps) üst üste yazılmasından türemiştir.",
+    "Tarihteki ilk kredi kartı 1950'de 'Diners Club' adıyla restoranda hesabı ödemeyi unutan bir iş adamı tarafından icat edildi.",
+    "Çin, dünyanın en büyük döviz rezervine sahip ülkesidir.",
+    "Ekonomide 'Giffen Malı', fiyatı arttıkça talebi de artan garip ürünleri (temel gıda gibi) tanımlar.",
+    "Nike logosunu tasarlayan öğrenci, bu tasarım için sadece 35 dolar almıştı (daha sonra hisse verildi).",
+    "Dünyanın en büyük perakendecisi Walmart, her dakika yarım milyon dolardan fazla kar elde eder.",
+    "Lego, dünyadaki en büyük tekerlek üreticisidir (oyuncak arabalar için).",
+    "Para basmak, bazen paranın kendi değerinden daha pahalıya mal olabilir (madeni paralar gibi).",
+    "Petrol fiyatları 'varil' üzerinden hesaplanır ve bir varil tam 159 litredir.",
+    "Dünyadaki en yüksek vergi oranları genellikle İskandinav ülkelerinde (Danimarka, İsveç) bulunur.",
+    "Zimbabve bir dönem 100 trilyon dolarlık banknot basmıştır (ancak bir ekmek bile alamıyordu).",
+    "Kara Cuma (Black Friday) ismi, dükkanların zarardan (kırmızı) kara (siyah) geçmesi anlamından gelir.",
+    "Ekonomide 'Ayı Piyasası' düşüşü, 'Boğa Piyasası' yükselişi temsil eder.",
+    "İnternetten yapılan ilk alışverişin bir Pizza Hut siparişi olduğu söylenir (1994).",
+    "Dünyanın en eski bankası olan Monte dei Paschi di Siena, 1472'den beri hizmet vermektedir.",
+    "Lüks malların talebinin, fiyatı arttıkça artmasına 'Veblen Etkisi' denir.",
+    "Kripto paralar 'blokzincir' (blockchain) teknolojisi ile şifrelenir ve merkeziyetsizdir.",
+    "Japon Yeni, 'yuvarlak' anlamına gelen bir kelimeden türemiştir.",
+    "Pound (Sterlin), dünyanın en eski ve hala kullanılan para birimidir.",
+    "Dünyadaki milyarderlerin yarısından fazlası kendi servetini sıfırdan yapmıştır (self-made).",
+    "Ekonomide 'Fırsat Maliyeti', bir şeyi seçerken vazgeçtiğiniz diğer şeyin değeridir.",
+    "Büyük Buhran (1929), dünya tarihinin en büyük ekonomik çöküşüdür.",
+    "Birleşik Krallık'ta 1 peni basmak, 1 peniden daha pahalıya mal olur.",
+    "Vergi cennetleri, dünyadaki toplam finansal varlığın üçte birini barındırıyor olabilir.",
+    "Gayrisafi Yurt İçi Hasıla (GSYİH), bir ülkenin tüm üretim gücünü ölçer.",
+    "Altın standardı, 1971 yılında ABD tarafından tamamen terk edilmiştir.",
+    "Dünyadaki elmas ticaretinin %80'inden fazlası Belçika'nın Anvers şehri üzerinden döner.",
+    "Ekonomik krizlerde genellikle altın ve gümüş gibi değerli metallere talep artar.",
+    "Sermaye (Capital) kelimesi, Latince hayvan başı anlamına gelen 'caput'tan gelir.",
+    "Faiz oranları merkez bankaları tarafından enflasyonu kontrol etmek için kullanılır.",
+    "Durgunluk (Resesyon), ekonominin üst üste iki çeyrek küçülmesidir.",
+    "Dünya Bankası ve IMF, II. Dünya Savaşı'ndan sonra dünya ekonomisini yeniden kurmak için kurulmuştur."
+],
+
+
+"Genel Kültür": [
+    "Lego, dünyadaki en büyük lastik üreticisidir (yılda 300 milyondan fazla küçük tekerlek üretirler).",
+    "İskambil kağıtlarındaki her papaz tarihteki bir kralı temsil eder: Maça (Kral David), Kupa (Şarlman), Karo (Sezar), Sinek (İskender).",
+    "Çakmak, kibritten daha önce (1823 yılında) icat edilmiştir.",
+    "Barbie bebeğin tam adı Barbara Millicent Roberts'tır.",
+    "Dünyanın en çok ziyaret edilen müzesi Paris'teki Louvre Müzesi'dir.",
+    "Sadece iki ülke bayrağında mor renk kullanır: Dominik ve Nikaragua.",
+    "Ketçap, 1830'larda ishal ve hazımsızlık için ilaç olarak satılıyordu.",
+    "Bir cam parçası doğada yaklaşık 4.000 yılda yok olur.",
+    "Eskimo dillerinde karın farklı türleri için 50'den fazla kelime bulunur.",
+    "Sıcak su soğuk sudan daha hızlı donabilir (Mpemba etkisi).",
+    "Güneş gözlükleri ilk olarak 12. yüzyılda Çinli yargıçların mahkemede duygularını gizlemesi için icat edildi.",
+    "Rusya'nın yüzölçümü, Plüton gezegeninin yüzölçümünden daha büyüktür.",
+    "Karıncalar ömürleri boyunca hiç uyumazlar ve akciğerleri yoktur.",
+    "Fransa'da bir ölüyle evlenmek Cumhurbaşkanı izniyle yasal olarak mümkündür.",
+    "İnsanlar hayatlarının yaklaşık 6 ayını kırmızı ışığın yeşile dönmesini bekleyerek geçirir.",
+    "Titanik batarken orkestra, yolcuları sakinleştirmek için son ana kadar çalmaya devam etmiştir.",
+    "Dünyanın en kısa savaşı İngiltere ile Zanzibar arasında olmuş ve sadece 38 dakika sürmüştür.",
+    "Kola, ilk icat edildiğinde içinde az miktarda kokain özü bulunuyordu.",
+    "Zürafaların dilleri yaklaşık 50 cm uzunluğundadır ve dillerini güneşten korumak için renkleri siyahtır.",
+    "Bir sümüklü böcek tam 3 yıl boyunca uyuyabilir.",
+    "Dünyanın en eski üniversitesi 859 yılında kurulan Fas'taki Karaviyn Üniversitesi'dir.",
+    "Japonya'da kare şeklinde karpuzlar yetiştirilir (depolama kolaylığı için).",
+    "İnsanların çoğu hapşırırken gözlerini kapatmak zorundadır (refleks).",
+    "Yeryüzündeki tüm altın çıkarılsa dünyayı diz boyuna kadar kaplayabilir.",
+    "Eyfel Kulesi yazın genleşme nedeniyle 15 santimetreye kadar uzayabilir.",
+    "Dünyadaki en popüler isim 'Muhammed'dir.",
+    "Oxford Üniversitesi, Aztek İmparatorluğu'ndan daha eskidir.",
+    "İsviçre'de tek bir kobay faresine sahip olmak yasa dışıdır (çünkü sosyal hayvanlardır).",
+    "Venüs'te bir gün, bir yıldan daha uzun sürer.",
+    "İnsan vücudundaki en güçlü kas çene kasıdır.",
+    "Korsanların göz bandı takma sebebi karanlıkta daha iyi görebilmek içindir.",
+    "Altın, yenilebilir bir maddedir (saf altın sindirim sistemine zarar vermez).",
+    "Satranç, tarihteki en eski strateji oyunlarından biridir ve Hindistan kökenlidir.",
+    "Monopoly oyunu aslında emlak piyasasının adaletsizliğini göstermek için icat edilmişti.",
+    "Su aygırlarının sütü pembe renktedir.",
+    "Balıkların çoğu göz kapakları olmadığı için gözleri açık uyurlar.",
+    "Arılar dünyanın her yerinde bulunur (Antarktika hariç).",
+    "Mavi balinaların kalbi bir otomobil büyüklüğündedir.",
+    "Dünyanın en küçük ülkesi olan Vatikan, 0.44 kilometrekaredir.",
+    "İskandinav ülkelerinde kışın güneş bazen haftalarca hiç batmaz (Gece Yarısı Güneşi).",
+    "İnternet üzerindeki tüm verilerin toplam ağırlığı yaklaşık bir çilek kadardır.",
+    "Flamingolar sadece kafaları ters dururken yemek yiyebilirler.",
+    "Dünyanın en pahalı kahvesi (Kopi Luwak), bir hayvanın dışkısından elde edilir.",
+    "İnsan DNA'sı ile muz DNA'sı %50 benzerlik gösterir.",
+    "Yeryüzündeki en yüksek nokta Everest, en derin nokta Mariana Çukuru'dur.",
+    "Kutup ayılarının derisi aslında siyah, tüyleri ise şeffaftır.",
+    "Eski Mısır'da kedileri öldürmenin cezası idamdı.",
+    "Zuckerberg, kırmızı-yeşil renk körü olduğu için Facebook'un ana rengi mavidir.",
+    "Kuşlar uçarken yönlerini dünyanın manyetik alanını kullanarak bulurlar.",
+    "Kağıt para aslında kağıttan değil, %75 pamuk ve %25 ketenden yapılır."
+],
+
+"Mühendislik": [
+    "Dünyanın en yüksek binası Burj Khalifa (828 m), rüzgarda yaklaşık 1.5 metre sallanacak şekilde tasarlanmıştır.",
+    "Panama Kanalı inşa edilirken çıkarılan toprakla 63 adet Keops Piramidi yapılabilirdi.",
+    "Golden Gate Köprüsü'nün toplam tel uzunluğu Dünya'nın çevresini 3 kez dolanabilir.",
+    "Mühendislik kelimesi, Latince 'ingenium' (yetenek/yaratıcılık) kelimesinden gelir.",
+    "Çin Seddi'nin bazı bölümlerinin yapımında harç olarak yapışkan pirinç kullanılmıştır.",
+    "Dünyanın en eski çalışan mühendislik harikalarından biri olan Roma su kemerleri hala sağlamdır.",
+    "Manş Tüneli (Fransa-İngiltere), su altındaki en uzun tüneldir (38 km'si denizin altındadır).",
+    "Modern bir akıllı telefon, Ay'a giden Apollo 11 bilgisayarından milyonlarca kat daha fazla işlem gücüne sahiptir.",
+    "Duct Tape (Koli bandı), II. Dünya Savaşı sırasında cephane kutularını mühürlemek için icat edildi.",
+    "Dünyanın en derin sondaj deliği (Kola Derin Sondajı), 12.262 metre derinliktedir.",
+    "İshak Paşa Sarayı, dünyada merkezi ısıtma (kalorifer) sisteminin kullanıldığı ilk yapıdır.",
+    "Mimar Sinan, Selimiye Camii'nin kubbesini yaparken hiçbir bilgisayar yardımı olmadan muazzam bir statik hesap yapmıştır.",
+    "Gökdelenlerin rüzgarda yıkılmamasının sebebi, tepelerine yerleştirilen devasa 'Tuned Mass Damper' ağırlıklarıdır.",
+    "Dünyanın en geniş köprüsü Kahire'deki Tahya Mısır Köprüsü'dür (67.3 metre genişlik).",
+    "Asma köprülerde kullanılan halatlar, binlerce küçük çelik telin birleşmesinden oluşur.",
+    "Sıvı kristal ekranlar (LCD), aslında tesadüfen keşfedilen bir kimyasal maddedir.",
+    "Barajlar inşa edilirken betonun içindeki ısının dışarı atılması için içinden soğuk su boruları geçirilir.",
+    "Japonya'daki bazı binalar, deprem anında sallanmak yerine tekerlekli sistemler üzerinde kayacak şekilde tasarlanmıştır.",
+    "Hızlı trenler (Maglev), raylara değmeden güçlü mıknatıslar üzerinde havada asılı kalarak giderler.",
+    "İlk programlanabilir bilgisayar ENIAC, 30 ton ağırlığındaydı ve koca bir odayı kaplıyordu.",
+    "Hologram teknolojisi aslında 1940'larda icat edilmişti, ancak lazerler bulunana kadar geliştirilemedi.",
+    "Dünyanın en büyük güneş enerji santrali milyonlarca aynadan oluşur.",
+    "Yüksek hızlı asansörler (Burj Khalifa'daki gibi), kulak basıncını korumak için basınç kontrol sistemine sahiptir.",
+    "Nanoteknoloji, atom ve molekül seviyesinde (metrenin milyarda biri) mühendislik yapmaktır.",
+    "Haliç üzerindeki Galata Köprüsü, dünyanın en eski 'açılır-kapanır' köprü tiplerinden biridir.",
+    "Kızılötesi sensörler, nesnelerin yaydığı ısıyı algılayarak çalışır.",
+    "Asansörlerin fren sistemi icat edilmeseydi, gökdelenler asla inşa edilemezdi.",
+    "3D yazıcılar, karmaşık motor parçalarını tek bir parça halinde üretebilir.",
+    "Siber mühendislik, dijital ve fiziksel sistemlerin güvenliğini sağlar.",
+    "Dünyanın en büyük kargo gemisi bir seferde 24.000 adet konteyner taşıyabilir.",
+    "Asfalt aslında tamamen geri dönüştürülebilir bir mühendislik malzemesidir.",
+    "Mühendisler, uçak kanatlarını esnek tasarlarlar; kanatlar havada metrelerce esneyebilir ama kırılmaz.",
+    "Dünyadaki ilk demir köprü 1779 yılında İngiltere'de inşa edilmiştir.",
+    "Akıllı saatlerdeki sensörler, kalp atışınızı yeşil ışığın kan damarlarınızdan yansımasıyla ölçer.",
+    "Rüzgar türbinlerinin kanatları o kadar büyüktür ki, bir tanesi bir yolcu uçağının kanadından daha uzundur.",
+    "Beton, dünyada sudan sonra en çok tüketilen maddedir.",
+    "Ses yalıtım mühendisliği, stüdyolarda sesin yankılanmasını geometrik şekillerle engeller.",
+    "İlk robot 'Unimate', 1961'de bir otomobil fabrikasında çalışmaya başlamıştır.",
+    "Optik fiberler, bilgiyi ışık hızıyla cam ipliklerin içinden geçirir.",
+    "Biyomedikal mühendislik, insan vücudu için yapay organlar tasarlar.",
+    "Nükleer santrallerde enerji, atomların bölünmesi (fisyon) ile elde edilir.",
+    "İnşaat mühendisliğinde 'Zemin Mekaniği', binanın temeli için en kritik bilim dalıdır.",
+    "Elektrik şebekeleri, üretilen elektriğin aynı saniyede tüketilmesini gerektiren hassas sistemlerdir.",
+    "Lazer kesim makineleri, metal plakaları 0.1 mm hassasiyetle kesebilir.",
+    "Dünyanın en büyük yapay adası Dubai'deki Palm Jumeirah'tır.",
+    "Yol yapımında kullanılan silindirler, toprağı titreşim vererek sıkıştırır.",
+    "Kevlar, çelikten 5 kat daha güçlü ama çok hafif bir mühendislik lifidir (kurşun geçirmez yelek yapımı).",
+    "Bluetooth teknolojisi, veriyi radyo dalgalarıyla kısa mesafede transfer eder.",
+    "Mühendislik projelerinde 'Emniyet Katsayısı', sistemin taşıyabileceğinden çok daha fazlasına dayanıklı olmasıdır.",
+    "Otonom araçlar (insansız araçlar), çevrelerini Lidar (lazer radar) ile görürler."
+],
+
+"Havacılık": [
+    "Uçaklardaki yemeklerin tadının farklı gelmesinin sebebi, yüksek irtifada tat alma duyumuzun %30 azalmasıdır.",
+    "Dünyanın en uzun ticari uçuşu Singapur-New York arasıdır ve tam 18 saat 45 dakika sürer.",
+    "Uçak pencerelerindeki o küçük delik (breath hole), kabin basıncını dengelemek içindir.",
+    "Uçakların arkasında bıraktığı beyaz izler (contrails), aslında yüksek irtifadaki su buharının donarak kristalleşmesidir.",
+    "Kara kutular aslında turuncu renktedir (enkazda kolay bulunmaları için).",
+    "Wright Kardeşler'in ilk uçuşu sadece 12 saniye sürmüş ve 37 metre mesafe kat etmiştir.",
+    "Havacılık dili tüm dünyada zorunlu olarak İngilizcedir.",
+    "Bir uçağın kara kutusu, bir binanın tepesinden düşse veya devasa bir yangına maruz kalsa bile içindeki verileri korur.",
+    "Ticari uçakların çoğu aslında sadece bir motoru çalışırken bile güvenle uçmaya devam edebilir.",
+    "Dünyanın en büyük yolcu uçağı Airbus A380, yaklaşık 850 yolcu taşıyabilir.",
+    "Uçak lastikleri, iniş anındaki devasa sürtünmeye dayanması için 200 bar basınca ve yüksek ısıya dayanıklı üretilir.",
+    "Kokpitteki pilotlar, bir zehirlenme durumunda uçağı kontrol edecek birinin kalması için genellikle farklı yemekler yerler.",
+    "Bir Boeing 747'de toplamda yaklaşık 240 kilometre uzunluğunda elektrik kablosu bulunur.",
+    "Uçakların çoğu gökyüzünde yıldırım çarpmasına maruz kalır, ancak gövde bu elektriği dışarıya atacak şekilde tasarlanmıştır.",
+    "Yolcu uçakları genellikle 10.000 metre (30.000 feet) civarında uçar, çünkü hava orada daha incedir ve yakıt tasarrufu sağlar.",
+    "Dünyanın en güvenli ulaşım aracı istatistiksel olarak uçaktır.",
+    "İlk kadın pilot Amelia Earhart, Atlantik Okyanusu'nu tek başına uçarak geçen ilk kadındır.",
+    "Uçaklarda 'otomatik pilot' sistemi uçağı uçurabilir ancak iniş ve kalkış genellikle pilotlar tarafından yapılır.",
+    "Havacılıkta 'Hız Sınırı' ses hızıdır (Mach 1). Ses hızını geçen uçaklara süpersonik uçak denir.",
+    "Dünyanın en yoğun havalimanı genellikle Atlanta Hartsfield-Jackson (ABD) havalimanıdır.",
+    "Uçuş sırasında kabin basıncı düştüğünde düşen maskelerdeki oksijen sadece 15 dakika yeterlidir (bu süre pilotun güvenli irtifaya inmesi için yeterlidir).",
+    "Uçak pencereleri, basınç farkına dayanabilmesi için her zaman yuvarlak köşelidir (köşeli pencereler metal yorgunluğuna neden olur).",
+    "Bir uçağın kanatları, uçuş sırasında yukarı ve aşağı doğru metrelerce esneyebilir.",
+    "Helikopterler, motorları dursa bile 'otorotasyon' denilen bir yöntemle süzülerek güvenli iniş yapabilirler.",
+    "Concorde, Atlas Okyanusu'nu sadece 3 saatte geçebilen efsanevi bir süpersonik yolcu uçağıydı.",
+    "Savaş uçaklarında pilotun koltuğu acil durumda saniyede 15G kuvvetiyle uçaktan fırlatılabilir.",
+    "Havalimanı pistlerindeki numaralar, pistin baktığı manyetik yönü (pusula derecesini) temsil eder.",
+    "Uçakların sol kanadında kırmızı, sağ kanadında yeşil ışık bulunur (diğer uçakların yönünü anlaması için).",
+    "Bir uçak motoru, kalkış sırasında küçük bir şehre yetecek kadar hava çeker.",
+    "Havacılıkta 'Kuş Çarpması', motorlar ve camlar için en büyük testlerden biridir.",
+    "Uçaklarda 13. sıra numarası birçok havayolu tarafından uğursuz sayıldığı için atlanır.",
+    "İlk ticari jet uçağı de Havilland Comet'tir.",
+    "Uçuş sırasında telefonların 'Uçak Modu'na alınması, pilotun kuleyle olan telsiz iletişiminde cızırtı yapmaması içindir.",
+    "Dünyanın en kısa ticari uçuşu İskoçya'daki iki ada arasındadır ve sadece 57 saniye sürer.",
+    "Jet motorları, havayı önden alıp sıkıştırarak arkadan büyük bir hızla dışarı atma prensibiyle (itki) çalışır.",
+    "Görerek Uçuş (VFR) ve Aletli Uçuş (IFR), havacılığın iki temel uçuş yöntemidir.",
+    "Uçakların yakıtı kanatların içindeki depolarda saklanır.",
+    "Güneş enerjisiyle dünyayı turlayan ilk uçak 'Solar Impulse 2'dir.",
+    "Uçak pencereleri aslında 3 katlı camdan oluşur.",
+    "Havalimanlarında uçaklara yol gösteren kule kontrolörleri, dünyanın en stresli işlerinden birini yaparlar.",
+    "Hava trafik kontrol radarları, binlerce uçağın konumunu aynı anda takip edebilir.",
+    "Uçuş sırasında uyumak rüyalarınızın daha canlı olmasına neden olabilir (kabin basıncı nedeniyle).",
+    "Gökkuşağı uçaktan bakıldığında tam bir daire olarak görülebilir.",
+    "Uçak tuvaletleri sifon çekildiğinde vakum sistemiyle her şeyi hızla çeker.",
+    "Uçakların gövdesi genellikle alüminyum ve kompozit malzemelerden üretilir (hafif ve güçlü).",
+    "İnsansız Hava Araçları (İHA), askeri operasyonlardan kargo taşımacılığına kadar her alanda kullanılmaktadır.",
+    "İlk balon uçuşu 1783'te Montgolfier kardeşler tarafından yapılmıştır.",
+    "Sıcak hava balonları, havanın ısındıkça hafiflemesi prensibiyle yükselir.",
+    "Havacılıkta 'Kara Kutu' aslında iki tanedir: Biri ses kaydı (CVR), diğeri veri kaydı (FDR) yapar.",
+    "Uçakların hız ölçerleri (Pitot tüpü), dışarıdaki hava basıncını ölçerek hızı hesaplar."
+],
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        };
+
+        function toggleMenu() {
+            document.getElementById('sidebar').classList.toggle('active');
+        }
+
+        // KATEGORİYE GÖRE LİSTELEME
+        function loadCategory(catName) {
+            const area = document.getElementById('content-area');
+            const title = document.getElementById('current-cat-title');
+
+            title.innerText = catName + " Kategorisi";
+            area.innerHTML = ""; // Eski içeriği temizle
+
+            if (veritabani[catName]) {
+                veritabani[catName].forEach(bilgi => {
+                    const card = document.createElement('div');
+                    card.className = 'info-card';
+                    card.innerText = bilgi;
+                    area.appendChild(card);
+                });
+            }
+            toggleMenu(); // Menüyü kapat
+        }
+
+        // KELİME ARAMA
+        function searchWord() {
+            const query = document.getElementById('user-query').value.toLowerCase();
+            const area = document.getElementById('content-area');
+            const title = document.getElementById('current-cat-title');
+
+            area.innerHTML = "";
+            title.innerText = "Arama Sonuçları";
+
+            let found = false;
+            for (let cat in veritabani) {
+                veritabani[cat].forEach(bilgi => {
+                    if (bilgi.toLowerCase().includes(query)) {
+                        const card = document.createElement('div');
+                        card.className = 'info-card';
+                        card.style.borderLeftColor = "#3498db";
+                        card.innerText = `[${cat}] ${bilgi}`;
+                        area.appendChild(card);
+                        found = true;
+                    }
+                });
+            }
+            if (!found) area.innerHTML = "Hiçbir sonuç bulunamadı.";
+        }
+
+        function createBubbles() {
+            const container = document.getElementById('bubble-container');
+            for (let i = 0; i < 15; i++) {
+                const bubble = document.createElement('div');
+                bubble.className = 'bubble';
+                const size = Math.random() * 50 + 20 + "px";
+                bubble.style.width = size; bubble.style.height = size;
+                bubble.style.left = Math.random() * 100 + "%";
+                bubble.style.animationDuration = Math.random() * 8 + 4 + "s";
+                container.appendChild(bubble);
+            }
+        }
+
+
+
+
+
+        createBubbles();
+
+        function toggleTheme() {
+            document.body.classList.toggle('dark-mode');
+            const btn = document.getElementById('tbtn');
+            if (document.body.classList.contains('dark-mode')) {
+                btn.innerText = "☀️";
+            } else {
+                btn.innerText = "🌙";
+            }
+        }
+
+
+        function loadAllCategories() {
+            const area = document.getElementById('content-area');
+            const title = document.getElementById('current-cat-title');
+
+            title.innerText = "Tüm Arşiv";
+            area.innerHTML = "";
+
+            for (let cat in veritabani) {
+                veritabani[cat].forEach(bilgi => {
+                    const card = document.createElement('div');
+                    card.className = 'info-card';
+                    card.innerHTML = `<small style="color:#3498db; font-weight:bold;">#${cat}</small><br>${bilgi}`;
+                    area.appendChild(card);
+                });
+            }
+            toggleMenu(); // Tıklayınca menüyü kapatır
+        }
+
+
+
+
+        // WhatsApp Paylaşma Fonksiyonu
+        function shareInfo(metin) {
+            const url = "https://wa.me/?text=" + encodeURIComponent("Bak ne öğrendim: " + metin);
+            window.open(url, '_blank');
+        }
+
+        function loadCategory(catName) {
+            const area = document.getElementById('content-area');
+            document.getElementById('current-cat-title').innerText = catName;
+            area.innerHTML = "";
+            if (veritabani[catName]) {
+                veritabani[catName].forEach(bilgi => {
+                    const card = document.createElement('div');
+                    card.className = 'info-card';
+                    // Paylaş butonu buraya eklendi
+                    card.innerHTML = `<div class="share-btn" onclick="shareInfo('${bilgi.replace(/'/g, "\\")}')">🔗 WhatsApp</div>${bilgi}`;
+                    area.appendChild(card);
+                });
+            }
+            toggleMenu();
+        }
+
+        function loadAllCategories() {
+            const area = document.getElementById('content-area');
+            document.getElementById('current-cat-title').innerText = "Tüm Arşiv";
+            area.innerHTML = "";
+            for (let cat in veritabani) {
+                veritabani[cat].forEach(bilgi => {
+                    const card = document.createElement('div');
+                    card.className = 'info-card';
+                    card.innerHTML = `<div class="share-btn" onclick="shareInfo('${bilgi.replace(/'/g, "\\")}')">🔗 WhatsApp</div><small style="color:#3498db; font-weight:bold;">#${cat}</small><br>${bilgi}`;
+                    area.appendChild(card);
+                });
+            }
+            toggleMenu();
+        }
+
+        function searchWord() {
+            const query = document.getElementById('user-query').value.toLowerCase();
+            const area = document.getElementById('content-area');
+            if (!query) return;
+            area.innerHTML = "";
+            document.getElementById('current-cat-title').innerText = "Sonuçlar";
+            for (let cat in veritabani) {
+                veritabani[cat].forEach(bilgi => {
+                    if (bilgi.toLowerCase().includes(query)) {
+                        const card = document.createElement('div');
+                        card.className = 'info-card';
+                        card.innerHTML = `<div class="share-btn" onclick="shareInfo('${bilgi.replace(/'/g, "\\")}')">🔗 WhatsApp</div><small style="color:#3498db">#${cat}</small><br>${bilgi}`;
+                        area.appendChild(card);
+                    }
+                });
+            }
+        }
+
+        function handleKeyPress(event) {
+            // Eğer basılan tuş "Enter" ise (kod numarası 13)
+            if (event.key === "Enter") {
+                searchWord(); // Arama fonksiyonunu çalıştır
+            }
+        }
+
+
+
+
+
+
+
+
+
+
+
+    </script>
+</body>
+
+</html>
